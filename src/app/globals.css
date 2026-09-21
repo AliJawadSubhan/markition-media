@@ -19,8 +19,21 @@ html {
   scroll-behavior: smooth;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
-  background: var(--background);
+  background: linear-gradient(
+    180deg,
+    #040c22 0%,
+    #071540 15%,
+    #0b2060 35%,
+    #1050a8 60%,
+    #2a72cc 80%,
+    #5a96d8 100%
+  );
+  min-height: 100%;
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
