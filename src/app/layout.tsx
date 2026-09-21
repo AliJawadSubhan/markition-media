@@ -28,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#000028] text-white">
+      <body className="min-h-full flex flex-col bg-[#000028] text-white" suppressHydrationWarning>
         <Navbar />
         {children}
       </body>

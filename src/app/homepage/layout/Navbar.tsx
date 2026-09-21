@@ -15,21 +15,8 @@ const NAV_LINKS = [
 
 function ChevronDown() {
   return (
-    <svg
-      width="9"
-      height="5"
-      viewBox="0 0 9 5"
-      fill="none"
-      aria-hidden="true"
-      className="mt-px flex-shrink-0 opacity-60"
-    >
-      <path
-        d="M1 1l3.5 3.5L8 1"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="9" height="5" viewBox="0 0 9 5" fill="none" aria-hidden="true" className="mt-px flex-shrink-0 opacity-60">
+      <path d="M1 1l3.5 3.5L8 1" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -47,7 +34,6 @@ function HamburgerIcon({ open }: { open: boolean }) {
   );
 }
 
-/* Three-squares staircase icon for the CTA button */
 function StaircaseIcon() {
   return (
     <svg width="11" height="19" viewBox="0 0 11 19" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -58,36 +44,49 @@ function StaircaseIcon() {
   );
 }
 
-const navStyle: React.CSSProperties = {
-  background: "rgba(10, 14, 35, 0.92)",
-  backdropFilter: "blur(20px) saturate(1.8)",
-  WebkitBackdropFilter: "blur(20px) saturate(1.8)",
-  borderBottom: "1px solid rgba(255,255,255,0.06)",
+const floatStyle: React.CSSProperties = {
+  background: "rgba(8, 14, 38, 0.88)",
+  backdropFilter: "blur(24px) saturate(1.8)",
+  WebkitBackdropFilter: "blur(24px) saturate(1.8)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
 };
 
-const mobileGlassStyle: React.CSSProperties = {
-  background: "rgba(10, 14, 35, 0.96)",
-  backdropFilter: "blur(20px) saturate(1.8)",
-  WebkitBackdropFilter: "blur(20px) saturate(1.8)",
+const mobileMenuStyle: React.CSSProperties = {
+  background: "rgba(8, 14, 38, 0.97)",
+  backdropFilter: "blur(24px)",
+  WebkitBackdropFilter: "blur(24px)",
+  border: "1px solid rgba(255,255,255,0.08)",
+};
+
+const ctaStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.18)",
 };
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="sticky top-0 z-50 px-4 sm:px-6 pt-3 sm:pt-4" style={navStyle}>
-      <nav className="max-w-[1200px] mx-auto flex items-center justify-between py-3 gap-4">
+    /* Outer wrapper: transparent, just provides sticky + padding so the box floats */
+    <div className="sticky top-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
+
+      {/* Floating box */}
+      <nav
+        className="max-w-[1200px] mx-auto flex items-center justify-between px-4 sm:px-5 py-3 rounded-xl gap-3"
+        style={floatStyle}
+      >
         {/* Logo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/markition-logo.svg" alt="Markition" className="h-[26px] sm:h-[28px] w-auto flex-shrink-0" />
+        <img src="/markition-logo.svg" alt="Markition" className="h-[24px] sm:h-[26px] w-auto flex-shrink-0" />
 
-        {/* Desktop nav links */}
-        <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-[13px] text-white font-normal flex-1 justify-center">
+        {/* Desktop links */}
+        <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 text-[13px] text-white/80 font-normal flex-1 justify-center">
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}
               href="#"
-              className="hover:text-white/95 transition-colors duration-150 flex items-center gap-1 whitespace-nowrap px-2.5 py-1.5 rounded-lg hover:bg-white/[0.05]"
+              className="flex items-center gap-1 whitespace-nowrap px-2.5 py-1.5 rounded-lg hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
             >
               {link.label}
               {"dropdown" in link && link.dropdown && <ChevronDown />}
@@ -95,46 +94,41 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2.5 flex-shrink-0">
+        {/* CTA + hamburger */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           <a
             href="#"
-            className="text-white text-[12.5px] font-medium px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-[6px] flex items-center gap-2 transition-colors duration-150 whitespace-nowrap hover:bg-white/[0.06]"
-            style={{
-              background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.18)",
-            }}
+            className="hidden sm:flex items-center gap-2 text-white text-[12.5px] font-medium px-3.5 py-1.5 rounded-[6px] transition-colors duration-150 hover:bg-white/[0.12] whitespace-nowrap"
+            style={ctaStyle}
           >
             <StaircaseIcon />
-            <span className="hidden sm:inline">Book Free Consultation</span>
-            <span className="sm:hidden">Book Now</span>
-            <span aria-hidden="true" className="text-[11px]">→</span>
+            Book Free Consultation
           </a>
 
+          {/* Hamburger — shown below lg */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
-            className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-white/[0.08] transition-colors duration-150"
+            className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-white/[0.08] transition-colors"
           >
             <HamburgerIcon open={mobileOpen} />
           </button>
         </div>
       </nav>
 
-      {/* Mobile slide-down menu — keeps glass since it overlays content */}
+      {/* Mobile slide-down */}
       <div
         className="lg:hidden overflow-hidden"
         style={{
-          maxHeight: mobileOpen ? "480px" : "0px",
+          maxHeight: mobileOpen ? "520px" : "0px",
           opacity: mobileOpen ? 1 : 0,
-          transform: mobileOpen ? "translateY(0)" : "translateY(-6px)",
-          transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease, transform 0.22s ease",
+          transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease",
         }}
       >
         <div
-          className="max-w-[1200px] mx-auto mt-1.5 rounded-xl border border-white/[0.08] overflow-hidden"
-          style={mobileGlassStyle}
+          className="max-w-[1200px] mx-auto mt-2 rounded-xl overflow-hidden"
+          style={mobileMenuStyle}
         >
           {NAV_LINKS.map((link, i) => (
             <a
@@ -159,9 +153,11 @@ export default function Navbar() {
             <a
               href="#"
               onClick={() => setMobileOpen(false)}
-              className="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white text-[13.5px] font-medium px-5 py-2.5 rounded-[5px] transition-colors duration-150"
+              className="flex items-center justify-center gap-2 w-full text-white text-[13.5px] font-medium px-5 py-2.5 rounded-[6px] transition-colors"
+              style={ctaStyle}
             >
-              Book Free Consultation →
+              <StaircaseIcon />
+              Book Free Consultation
             </a>
           </div>
         </div>
