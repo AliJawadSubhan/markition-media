@@ -36,49 +36,32 @@ function ChevronDown() {
 
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-      className="flex-shrink-0"
-    >
-      <line
-        x1="3" y1="6" x2="17" y2="6"
-        stroke="white" strokeWidth="1.5" strokeLinecap="round"
-        style={{
-          transformOrigin: "10px 6px",
-          transform: open ? "rotate(45deg) translateY(4px)" : "rotate(0deg) translateY(0)",
-          transition: "transform 0.25s ease",
-        }}
-      />
-      <line
-        x1="3" y1="10" x2="17" y2="10"
-        stroke="white" strokeWidth="1.5" strokeLinecap="round"
-        style={{
-          opacity: open ? 0 : 1,
-          transition: "opacity 0.15s ease",
-        }}
-      />
-      <line
-        x1="3" y1="14" x2="17" y2="14"
-        stroke="white" strokeWidth="1.5" strokeLinecap="round"
-        style={{
-          transformOrigin: "10px 14px",
-          transform: open ? "rotate(-45deg) translateY(-4px)" : "rotate(0deg) translateY(0)",
-          transition: "transform 0.25s ease",
-        }}
-      />
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="flex-shrink-0">
+      <line x1="3" y1="6" x2="17" y2="6" stroke="white" strokeWidth="1.5" strokeLinecap="round"
+        style={{ transformOrigin: "10px 6px", transform: open ? "rotate(45deg) translateY(4px)" : "none", transition: "transform 0.25s ease" }} />
+      <line x1="3" y1="10" x2="17" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round"
+        style={{ opacity: open ? 0 : 1, transition: "opacity 0.15s ease" }} />
+      <line x1="3" y1="14" x2="17" y2="14" stroke="white" strokeWidth="1.5" strokeLinecap="round"
+        style={{ transformOrigin: "10px 14px", transform: open ? "rotate(-45deg) translateY(-4px)" : "none", transition: "transform 0.25s ease" }} />
     </svg>
   );
 }
 
-const navGlassStyle: React.CSSProperties = {
-  background: "rgba(8, 16, 52, 0.5)",
+/* Three-squares staircase icon for the CTA button */
+function StaircaseIcon() {
+  return (
+    <svg width="11" height="19" viewBox="0 0 11 19" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="4.88372" height="4.88372" rx="1" fill="white" />
+      <rect x="5.55469" y="7" width="4.88372" height="4.88372" rx="1" fill="white" />
+      <rect y="14" width="4.88372" height="4.88372" rx="1" fill="white" />
+    </svg>
+  );
+}
+
+const mobileGlassStyle: React.CSSProperties = {
+  background: "rgba(8, 16, 52, 0.85)",
   backdropFilter: "blur(20px) saturate(1.8)",
   WebkitBackdropFilter: "blur(20px) saturate(1.8)",
-  boxShadow: "0 2px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(100,150,255,0.06)",
 };
 
 export default function Navbar() {
@@ -86,17 +69,11 @@ export default function Navbar() {
 
   return (
     <div className="sticky top-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
-      <nav
-        className="max-w-[1200px] mx-auto flex items-center justify-between px-4 sm:px-5 py-3.5 rounded-none border border-white/[0.08] gap-4"
-        style={navGlassStyle}
-      >
+      {/* Nav — transparent background, no box shadow */}
+      <nav className="max-w-[1200px] mx-auto flex items-center justify-between px-4 sm:px-5 py-3.5 gap-4">
         {/* Logo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/markition-logo.svg"
-          alt="Markition"
-          className="h-[26px] sm:h-[28px] w-auto flex-shrink-0"
-        />
+        <img src="/markition-logo.svg" alt="Markition" className="h-[26px] sm:h-[28px] w-auto flex-shrink-0" />
 
         {/* Desktop nav links */}
         <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-[13px] text-white font-normal flex-1 justify-center">
@@ -116,8 +93,9 @@ export default function Navbar() {
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <a
             href="#"
-            className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-[12.5px] font-medium px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-[5px] flex items-center gap-1.5 transition-colors duration-150 whitespace-nowrap"
+            className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-[12.5px] font-medium px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-[5px] flex items-center gap-2 transition-colors duration-150 whitespace-nowrap"
           >
+            <StaircaseIcon />
             <span className="hidden sm:inline">Book Free Consultation</span>
             <span className="sm:hidden">Book Now</span>
             <span aria-hidden="true" className="text-[11px]">→</span>
@@ -134,20 +112,19 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile slide-down menu */}
+      {/* Mobile slide-down menu — keeps glass since it overlays content */}
       <div
         className="lg:hidden overflow-hidden"
         style={{
           maxHeight: mobileOpen ? "480px" : "0px",
           opacity: mobileOpen ? 1 : 0,
           transform: mobileOpen ? "translateY(0)" : "translateY(-6px)",
-          transition:
-            "max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease, transform 0.22s ease",
+          transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease, transform 0.22s ease",
         }}
       >
         <div
           className="max-w-[1200px] mx-auto mt-1.5 rounded-xl border border-white/[0.08] overflow-hidden"
-          style={navGlassStyle}
+          style={mobileGlassStyle}
         >
           {NAV_LINKS.map((link, i) => (
             <a
