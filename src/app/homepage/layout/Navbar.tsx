@@ -58,8 +58,15 @@ function StaircaseIcon() {
   );
 }
 
+const navStyle: React.CSSProperties = {
+  background: "rgba(10, 14, 35, 0.92)",
+  backdropFilter: "blur(20px) saturate(1.8)",
+  WebkitBackdropFilter: "blur(20px) saturate(1.8)",
+  borderBottom: "1px solid rgba(255,255,255,0.06)",
+};
+
 const mobileGlassStyle: React.CSSProperties = {
-  background: "rgba(8, 16, 52, 0.85)",
+  background: "rgba(10, 14, 35, 0.96)",
   backdropFilter: "blur(20px) saturate(1.8)",
   WebkitBackdropFilter: "blur(20px) saturate(1.8)",
 };
@@ -68,9 +75,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="sticky top-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
-      {/* Nav — transparent background, no box shadow */}
-      <nav className="max-w-[1200px] mx-auto flex items-center justify-between px-4 sm:px-5 py-3.5 gap-4">
+    <div className="sticky top-0 z-50 px-4 sm:px-6 pt-3 sm:pt-4" style={navStyle}>
+      <nav className="max-w-[1200px] mx-auto flex items-center justify-between py-3 gap-4">
         {/* Logo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/markition-logo.svg" alt="Markition" className="h-[26px] sm:h-[28px] w-auto flex-shrink-0" />
@@ -93,7 +99,11 @@ export default function Navbar() {
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <a
             href="#"
-            className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-[12.5px] font-medium px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-[5px] flex items-center gap-2 transition-colors duration-150 whitespace-nowrap"
+            className="text-white text-[12.5px] font-medium px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-[6px] flex items-center gap-2 transition-colors duration-150 whitespace-nowrap hover:bg-white/[0.06]"
+            style={{
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.18)",
+            }}
           >
             <StaircaseIcon />
             <span className="hidden sm:inline">Book Free Consultation</span>

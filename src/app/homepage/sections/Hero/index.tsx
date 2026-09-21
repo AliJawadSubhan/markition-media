@@ -5,10 +5,17 @@ export default function Hero() {
     <section
       className="relative w-full overflow-hidden"
       style={{
-        background:
-          "linear-gradient(180deg, #000218 4%, #1964D1 74.52%, #F5F5F7 87.5%)",
+        background: "#000218",
       }}
     >
+      {/* Blue radial glow — concentrated at bottom center, dark edges */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 100%, #1964D1 0%, rgba(25,100,209,0.35) 40%, transparent 70%)",
+        }}
+      />
       {/* ── Two-column text block ────────────────────────────────────── */}
       <div className="max-w-[1200px] mx-auto px-6 sm:px-10 pt-14 sm:pt-20 pb-14 sm:pb-18">
         <div className="flex flex-col lg:flex-row lg:items-end gap-10 lg:gap-16">
