@@ -3,14 +3,14 @@
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { label: "About" },
-  { label: "Services", dropdown: true },
-  { label: "Industries", dropdown: true },
-  { label: "Locations", dropdown: true },
-  { label: "Resources" },
-  { label: "Case Studies" },
-  { label: "Portfolio" },
-  { label: "Contact" },
+  { label: "About",        href: "/about" },
+  { label: "Services",     href: "/services",   dropdown: true },
+  { label: "Industries",   href: "/industries", dropdown: true },
+  { label: "Locations",    href: "/locations",  dropdown: true },
+  { label: "Resources",    href: "/resources" },
+  { label: "Case Studies", href: "/case-studies" },
+  { label: "Portfolio",    href: "/portfolio" },
+  { label: "Contact",      href: "/contact" },
 ] as const;
 
 function ChevronDown() {
@@ -45,7 +45,7 @@ function StaircaseIcon() {
 }
 
 const floatStyle: React.CSSProperties = {
-  background: "rgba(8, 14, 38, 0.88)",
+  background: "rgba(8, 14, 38, 0.62)",
   backdropFilter: "blur(24px) saturate(1.8)",
   WebkitBackdropFilter: "blur(24px) saturate(1.8)",
   border: "1px solid rgba(255,255,255,0.08)",
@@ -68,36 +68,42 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    /* Outer wrapper: transparent, just provides sticky + padding so the box floats */
-    <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 pt-4 sm:pt-5">
+    <header className="relative z-50 px-3 sm:px-4 pt-3 sm:pt-4">
 
-      {/* Floating box */}
+      {/* Floating nav box */}
       <nav
+        aria-label="Main navigation"
         className="max-w-[1480px] mx-auto flex items-center justify-between px-5 sm:px-8 py-4 rounded-2xl gap-4"
         style={floatStyle}
       >
-        {/* Logo */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/markition-logo.svg" alt="Markition" className="h-[28px] sm:h-[32px] w-auto flex-shrink-0" />
+        {/* Logo — links to homepage */}
+        <a href="/" aria-label="Markition Media — Home" className="flex-shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/markition-logo.svg" alt="Markition Media" className="h-[28px] sm:h-[32px] w-auto" />
+        </a>
 
         {/* Desktop links */}
-        <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-[14px] text-white/80 font-normal flex-1 justify-center">
+        <ul
+          role="list"
+          className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-[14px] text-white/80 font-normal flex-1 justify-center list-none m-0 p-0"
+        >
           {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href="#"
-              className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
-            >
-              {link.label}
-              {"dropdown" in link && link.dropdown && <ChevronDown />}
-            </a>
+            <li key={link.label}>
+              <a
+                href={link.href}
+                className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
+              >
+                {link.label}
+                {"dropdown" in link && link.dropdown && <ChevronDown />}
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* CTA + hamburger */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <a
-            href="#"
+            href="/contact"
             className="hidden sm:flex items-center gap-2 text-white text-[13px] font-medium px-4 py-2 rounded-[8px] transition-colors duration-150 hover:bg-white/[0.12] whitespace-nowrap"
             style={ctaStyle}
           >
@@ -107,9 +113,11 @@ export default function Navbar() {
 
           {/* Hamburger — shown below lg */}
           <button
+            type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
             className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-white/[0.08] transition-colors"
           >
             <HamburgerIcon open={mobileOpen} />
@@ -119,39 +127,45 @@ export default function Navbar() {
 
       {/* Mobile slide-down */}
       <div
+        id="mobile-nav"
         className="lg:hidden overflow-hidden"
+        aria-hidden={!mobileOpen}
         style={{
           maxHeight: mobileOpen ? "520px" : "0px",
           opacity: mobileOpen ? 1 : 0,
           transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease",
         }}
       >
-        <div
-          className="max-w-[1200px] mx-auto mt-2 rounded-xl overflow-hidden"
+        <nav
+          aria-label="Mobile navigation"
+          className="overflow-hidden"
           style={mobileMenuStyle}
         >
-          {NAV_LINKS.map((link, i) => (
-            <a
-              key={link.label}
-              href="#"
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center justify-between px-5 py-3.5 text-[13.5px] text-white/75 hover:text-white hover:bg-white/[0.05] transition-colors duration-150 ${
-                i < NAV_LINKS.length - 1 ? "border-b border-white/[0.05]" : ""
-              }`}
-            >
-              <span>{link.label}</span>
-              {"dropdown" in link && link.dropdown ? (
-                <ChevronDown />
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="opacity-30">
-                  <path d="M4 7h6M7 4l3 3-3 3" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </a>
-          ))}
+          <ul role="list" className="list-none m-0 p-0">
+            {NAV_LINKS.map((link, i) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center justify-between px-5 py-3.5 text-[13.5px] text-white/75 hover:text-white hover:bg-white/[0.05] transition-colors duration-150 ${
+                    i < NAV_LINKS.length - 1 ? "border-b border-white/[0.05]" : ""
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  {"dropdown" in link && link.dropdown ? (
+                    <ChevronDown />
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="opacity-30">
+                      <path d="M4 7h6M7 4l3 3-3 3" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
           <div className="p-4 border-t border-white/[0.05]">
             <a
-              href="#"
+              href="/contact"
               onClick={() => setMobileOpen(false)}
               className="flex items-center justify-center gap-2 w-full text-white text-[13.5px] font-medium px-5 py-2.5 rounded-[6px] transition-colors"
               style={ctaStyle}
@@ -160,8 +174,8 @@ export default function Navbar() {
               Book Free Consultation
             </a>
           </div>
-        </div>
+        </nav>
       </div>
-    </div>
+    </header>
   );
 }

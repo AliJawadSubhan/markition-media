@@ -255,7 +255,7 @@ export default function Work() {
     <section
       ref={sectionRef}
       id="work"
-      className="relative w-full overflow-clip bg-[#b7d5fb]"
+      className="relative w-full overflow-clip"
       style={{
         fontFamily: "var(--font-inter, Inter, sans-serif)",
         height: pinHeight ? `${pinHeight}px` : undefined,
@@ -362,7 +362,7 @@ export default function Work() {
         `}
       </style>
 
-      <div className="work-pin-sticky">
+      <div className="work-pin-sticky" style={{ background: "linear-gradient(160deg, #e8f4ff 0%, #f0f7ff 40%, #ddeeff 100%)" }}>
         <div className="w-full">
           <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
             <h2

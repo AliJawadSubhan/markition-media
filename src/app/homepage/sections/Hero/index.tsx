@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative w-full">
 
       {/* Two-column text content */}
-      <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-10 pt-32 sm:pt-40 pb-14 sm:pb-20">
+      <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-10 pt-14 sm:pt-20 pb-14 sm:pb-20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-12">
 
           {/* Left — heading */}

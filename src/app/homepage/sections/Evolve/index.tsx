@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useState } from "react";
+import LottieAnimation from "./LottieAnimation";
 
 const CARDS = [
   {
@@ -163,6 +164,11 @@ export default function Evolve() {
           }
         `}
       </style>
+      {/* Lottie animation */}
+      <div className="w-full pb-4 sm:pb-6">
+        <LottieAnimation />
+      </div>
+
       <div className="max-w-[1200px] mx-auto">
 
         {/* Heading */}
