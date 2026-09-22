@@ -1,18 +1,12 @@
 "use client";
 
-// Cards are positioned with absolute left/top — exactly like the approved static
-// layout — so every card stays upright (no CSS rotation tilt).
-// A requestAnimationFrame loop increments each card's arc angle, creating the
-// clockwise circular carousel while preserving the original visual appearance.
-//
-// Circle: R=800px, centre at (50 %, 1000 px from top).  Design width 1440 px.
-
 import { useEffect, useRef, useState } from "react";
 
-const ARC_R         = 800;
-const ARC_CY        = 1000;
-const CARD_W        = 200;
-const REVOLUTION_MS = 60_000; // 60 s per full revolution
+const ARC_R    = 700;
+const ARC_CY   = 860;    // circle centre Y near section bottom — keeps U-shape
+const CARD_W   = 170;
+const SECTION_H = 880;
+const AUTO_SPD  = 0.018; // degrees per ms (auto-rotate speed)
 
 const FILES = [
   "meadowhawk.png",
@@ -26,47 +20,64 @@ const FILES = [
   "focus-stability.png",
 ];
 
-// First 9: original visible angles (17.5° step — identical to the approved static layout)
-// Last 9:  hidden angles filling the lower 220° arc (22° step)
-const WHEEL_ANGLES = [
-  -70, -52.5, -35, -17.5,  0, 17.5,  35, 52.5,  70,
-   92,  114,  136,  158, 180,  202, 224,  246, 268,
-];
+// 18 cards evenly spaced at 20° — full circle
+const NUM_CARDS   = 18;
+const ANGLE_STEP  = 360 / NUM_CARDS; // 20°
+const BASE_ANGLES = Array.from({ length: NUM_CARDS }, (_, i) => i * ANGLE_STEP - 80);
 
-function toRad(deg: number) { return (deg * Math.PI) / 180; }
-
-// card LEFT edge  (card is CARD_W wide, centered on the arc x-position)
-function left(deg: number) {
-  return `calc(50% + ${ARC_R * Math.sin(toRad(deg)) - CARD_W / 2}px)`;
+function toRad(d: number) { return (d * Math.PI) / 180; }
+function cardLeft(d: number) {
+  return `calc(50% + ${ARC_R * Math.sin(toRad(d)) - CARD_W / 2}px)`;
 }
-// card TOP edge  (matches original yPx formula)
-function top(deg: number) {
-  return `${ARC_CY - ARC_R * Math.cos(toRad(deg))}px`;
+function cardTop(d: number) {
+  return `${ARC_CY - ARC_R * Math.cos(toRad(d))}px`;
 }
-function zOf(deg: number) {
-  return Math.max(1, Math.round(5 + 4 * Math.cos(toRad(deg))));
+function cardZ(d: number) {
+  return Math.max(1, Math.round(5 + 4 * Math.cos(toRad(d))));
 }
 
 export default function Portfolio() {
   const refs      = useRef<(HTMLDivElement | null)[]>([]);
   const rafRef    = useRef<number>();
+  const rotRef    = useRef(0);       // accumulated wheel rotation
+  const velRef    = useRef(0);       // momentum velocity (deg/ms)
+  const dragging  = useRef(false);
+  const lastX     = useRef(0);
+  const lastT     = useRef(0);
+  const lastDX    = useRef(0);
+
   const [hovered, setHovered]   = useState(false);
   const [pressed, setPressed]   = useState(false);
+  const [showSpin, setShowSpin] = useState(false);
+  const spinTimer               = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
-    const t0 = performance.now();
+    let prevT = performance.now();
 
-    function tick() {
-      const elapsed  = performance.now() - t0;
-      const wheelDeg = (elapsed / REVOLUTION_MS) * 360;
+    function tick(now: number) {
+      const dt = now - prevT;
+      prevT = now;
 
-      WHEEL_ANGLES.forEach((base, i) => {
+      if (!dragging.current) {
+        if (Math.abs(velRef.current) > 0.002) {
+          // momentum decay
+          rotRef.current += velRef.current * dt;
+          velRef.current *= 0.96;
+        } else {
+          // auto-rotate
+          velRef.current = 0;
+          rotRef.current += AUTO_SPD * dt;
+        }
+      }
+
+      const rot = rotRef.current;
+      BASE_ANGLES.forEach((base, i) => {
         const el = refs.current[i];
         if (!el) return;
-        const deg = base + wheelDeg;
-        el.style.left      = left(deg);
-        el.style.top       = top(deg);
-        el.style.zIndex    = String(zOf(deg));
+        const deg = base + rot;
+        el.style.left     = cardLeft(deg);
+        el.style.top      = cardTop(deg);
+        el.style.zIndex   = String(cardZ(deg));
         el.style.transform = `rotate(${deg}deg)`;
       });
 
@@ -77,30 +88,66 @@ export default function Portfolio() {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
 
+  function onPointerDown(e: React.PointerEvent<HTMLElement>) {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragging.current = true;
+    lastX.current    = e.clientX;
+    lastT.current    = e.timeStamp;
+    lastDX.current   = 0;
+    velRef.current   = 0;
+    clearTimeout(spinTimer.current);
+    setShowSpin(true);
+    spinTimer.current = setTimeout(() => setShowSpin(false), 2500);
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLElement>) {
+    if (!dragging.current) return;
+    const dx  = e.clientX - lastX.current;
+    const dt  = e.timeStamp - lastT.current || 1;
+    lastDX.current = dx / dt;          // deg per ms for momentum
+    lastX.current  = e.clientX;
+    lastT.current  = e.timeStamp;
+    rotRef.current += dx * 0.12;       // drag sensitivity
+  }
+
+  function onPointerUp() {
+    if (!dragging.current) return;
+    dragging.current = false;
+    velRef.current   = lastDX.current * 0.12; // hand off to momentum
+  }
+
   return (
     <section
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerLeave={onPointerUp}
       style={{
         position: "relative",
         width: "100%",
-        height: 870,
+        height: SECTION_H,
         overflow: "hidden",
+        background: "linear-gradient(180deg, #4a8ce0 0%, #2060c8 30%, #0d2a80 65%, #050e2a 100%)",
+        cursor: dragging.current ? "grabbing" : "grab",
+        userSelect: "none",
       }}
     >
-      {/* ── Cards ─────────────────────────────────────────────────── */}
-      {WHEEL_ANGLES.map((deg, i) => (
+      {/* ── Cards ────────────────────────────────────────────────── */}
+      {BASE_ANGLES.map((base, i) => (
         <div
           key={i}
           ref={(el) => { refs.current[i] = el; }}
           style={{
-            position: "absolute",
-            left:   left(deg),
-            top:    top(deg),
-            width:  CARD_W,
-            overflow: "hidden",
-            zIndex: zOf(deg),
-            transform: `rotate(${deg}deg)`,
+            position:        "absolute",
+            left:            cardLeft(base),
+            top:             cardTop(base),
+            width:           CARD_W,
+            overflow:        "hidden",
+            zIndex:          cardZ(base),
+            transform:       `rotate(${base}deg)`,
             transformOrigin: "50% 0%",
-            boxShadow: "0 12px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)",
+            boxShadow:       "0 12px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)",
+            pointerEvents:   "none",
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -113,43 +160,50 @@ export default function Portfolio() {
         </div>
       ))}
 
-      {/* ── Bottom gradient mask ───────────────────────────────────── */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 120,
-          background:
-            "linear-gradient(to top, #75a0e1 0%, rgba(117,160,225,0) 100%)",
-          zIndex: 10,
-          pointerEvents: "none",
-        }}
-      />
 
-      {/* ── Heading ───────────────────────────────────────────────── */}
+      {/* ── Spin GIF (shown while dragging) ─────────────────────── */}
+      <div style={{
+        position:   "absolute",
+        left:       "50%",
+        top:        540,
+        transform:  "translate(-50%, -50%)",
+        zIndex:     20,
+        pointerEvents: "none",
+        opacity:    showSpin ? 1 : 0,
+        transition: "opacity 0.3s ease",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/spin.gif"
+          alt=""
+          style={{ width: 130, height: 130, borderRadius: "50%", display: "block", objectFit: "cover" }}
+        />
+      </div>
+
+      {/* ── Heading ──────────────────────────────────────────────── */}
       <div
         style={{
-          position: "absolute",
-          left: "50%",
-          top: 600,
-          transform: "translate(-50%, -50%)",
-          zIndex: 20,
-          textAlign: "center",
-          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+          position:    "absolute",
+          left:        "50%",
+          top:         600,
+          transform:   "translate(-50%, -50%)",
+          zIndex:      20,
+          textAlign:   "center",
           pointerEvents: "none",
         }}
       >
         <h2
           style={{
-            margin: "0 0 18px",
-            fontSize: "clamp(36px, 3.8vw, 52px)",
-            fontWeight: 800,
-            color: "#ffffff",
+            margin:        "0 0 18px",
+            fontSize:      "clamp(36px, 3.8vw, 52px)",
+            fontWeight:    800,
+            color:         "#ffffff",
             letterSpacing: "-1.5px",
-            lineHeight: 1.1,
-            whiteSpace: "nowrap",
+            lineHeight:    1.1,
+            whiteSpace:    "nowrap",
+            fontFamily:    "var(--font-geist-sans), system-ui, sans-serif",
+            opacity:       showSpin ? 0 : 1,
+            transition:    "opacity 0.3s ease",
           }}
         >
           Ready to grow your
@@ -158,14 +212,14 @@ export default function Portfolio() {
         </h2>
         <p
           style={{
-            margin: 0,
-            fontSize: 15,
-            fontWeight: 400,
-            color: "rgba(255,255,255,0.75)",
-            lineHeight: 1.6,
-            maxWidth: 480,
+            margin:       0,
+            fontSize:     15,
+            fontWeight:   400,
+            color:        "rgba(255,255,255,0.75)",
+            lineHeight:   1.6,
+            maxWidth:     480,
             marginInline: "auto",
-            whiteSpace: "normal",
+            fontFamily:   "var(--font-geist-sans), system-ui, sans-serif",
           }}
         >
           Let&apos;s turn your marketing into a system that attracts, converts,
@@ -173,63 +227,65 @@ export default function Portfolio() {
         </p>
       </div>
 
-      {/* ── CTA ───────────────────────────────────────────────────── */}
+      {/* ── CTA ──────────────────────────────────────────────────── */}
       <div
         style={{
-          position: "absolute",
-          left: "50%",
-          top: 730,
-          transform: "translate(-50%, -50%)",
-          zIndex: 20,
+          position:   "absolute",
+          left:       "50%",
+          top:        730,
+          transform:  "translate(-50%, -50%)",
+          zIndex:     20,
           whiteSpace: "nowrap",
         }}
       >
         <a
           href="/contact"
+          onPointerDown={(e) => e.stopPropagation()}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => { setHovered(false); setPressed(false); }}
           onMouseDown={() => setPressed(true)}
           onMouseUp={() => setPressed(false)}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 10,
-            background: pressed
-              ? "linear-gradient(135deg, #0a0f2e 0%, #101a4a 100%)"
+            display:        "inline-flex",
+            alignItems:     "center",
+            gap:            10,
+            background:     pressed
+              ? "linear-gradient(135deg,#0a0f2e,#101a4a)"
               : hovered
-              ? "linear-gradient(135deg, #0d1540 0%, #1a2d80 100%)"
-              : "linear-gradient(135deg, #060c28 0%, #132060 100%)",
-            color: "#fff",
-            fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-            fontSize: 15,
-            fontWeight: 700,
-            padding: "14px 36px",
-            borderRadius: 50,
+              ? "linear-gradient(135deg,#0d1540,#1a2d80)"
+              : "linear-gradient(135deg,#060c28,#132060)",
+            color:          "#fff",
+            fontFamily:     "var(--font-geist-sans), system-ui, sans-serif",
+            fontSize:       15,
+            fontWeight:     700,
+            padding:        "14px 36px",
+            borderRadius:   50,
             textDecoration: "none",
-            letterSpacing: "0.04em",
-            border: "1px solid rgba(255,255,255,0.18)",
-            boxShadow: pressed
+            letterSpacing:  "0.04em",
+            border:         "1px solid rgba(255,255,255,0.18)",
+            boxShadow:      pressed
               ? "0 2px 8px rgba(0,0,0,0.5)"
               : hovered
-              ? "0 0 0 4px rgba(100,140,255,0.25), 0 8px 32px rgba(10,30,100,0.7)"
-              : "0 4px 24px rgba(0,10,60,0.6), inset 0 1px 0 rgba(255,255,255,0.08)",
-            transform: pressed ? "scale(0.95)" : hovered ? "scale(1.06)" : "scale(1)",
-            transition: "transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease",
+              ? "0 0 0 4px rgba(100,140,255,0.25),0 8px 32px rgba(10,30,100,0.7)"
+              : "0 4px 24px rgba(0,10,60,0.6),inset 0 1px 0 rgba(255,255,255,0.08)",
+            transform:      pressed ? "scale(0.95)" : hovered ? "scale(1.06)" : "scale(1)",
+            transition:     "transform 0.15s ease,box-shadow 0.2s ease,background 0.2s ease",
+            cursor:         "pointer",
           }}
         >
           <span>Start A Project</span>
           <span
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 26,
-              height: 26,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.12)",
-              fontSize: 14,
-              transform: hovered ? "translateX(3px)" : "translateX(0)",
-              transition: "transform 0.2s ease",
+              display:         "inline-flex",
+              alignItems:      "center",
+              justifyContent:  "center",
+              width:           26,
+              height:          26,
+              borderRadius:    "50%",
+              background:      "rgba(255,255,255,0.12)",
+              fontSize:        14,
+              transform:       hovered ? "translateX(3px)" : "translateX(0)",
+              transition:      "transform 0.2s ease",
             }}
           >
             →
