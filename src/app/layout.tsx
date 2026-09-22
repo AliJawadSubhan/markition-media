@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans, Familjen_Grotesk, Instrument_Serif } from "next/font/google";
 import Navbar from "./homepage/layout/Navbar";
+import LenisProvider from "@/components/LenisProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} ${familjen.variable} ${instrumentSerif.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#000218] text-white" suppressHydrationWarning>
+        <LenisProvider />
         <Navbar />
         {children}
       </body>

@@ -25,10 +25,10 @@ export default function HomePage() {
           <Ticker />
           <Services />
           <Evolve />
+          <Work />
         </div>
         {/* ── Second macro-section: unified dark canvas ── */}
         <div style={{ background: "linear-gradient(180deg, #000028 0%, #00041a 40%, #000010 100%)" }}>
-          <Work />
           <About />
           <Process />
           <Industries />

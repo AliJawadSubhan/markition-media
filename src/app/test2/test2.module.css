@@ -1,0 +1,58 @@
+.page {
+  min-height: 260vh;
+  background:
+    radial-gradient(circle at 50% 55%, rgba(0, 98, 255, 0.28), transparent 28rem),
+    radial-gradient(circle at 18% 34%, rgba(0, 75, 192, 0.24), transparent 22rem),
+    radial-gradient(circle at 82% 36%, rgba(34, 154, 255, 0.2), transparent 24rem),
+    linear-gradient(180deg, #000000 0%, #020518 48%, #000000 100%);
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 6.5rem 1rem 2rem;
+  pointer-events: none;
+}
+
+.lottieMount {
+  width: min(1180px, 100%);
+  height: clamp(370px, 54vw, 640px);
+  filter:
+    drop-shadow(0 0 12px rgba(92, 188, 255, 0.76))
+    drop-shadow(0 0 28px rgba(0, 91, 255, 0.34));
+}
+
+.lottieMount svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 0.9rem;
+}
+
+.scrollSpace {
+  min-height: 260vh;
+}
+
+@media (max-width: 760px) {
+  .scene {
+    padding-top: 5.75rem;
+  }
+
+  .lottieMount {
+    width: 136vw;
+    height: clamp(430px, 116vw, 660px);
+  }
+}
