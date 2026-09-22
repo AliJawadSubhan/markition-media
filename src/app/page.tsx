@@ -5,6 +5,7 @@ import Services from "./homepage/sections/Services";
 import Evolve from "./homepage/sections/Evolve";
 import Work from "./homepage/sections/Work";
 import About from "./homepage/sections/About";
+import Process from "./homepage/sections/Process";
 import Industries from "./homepage/sections/Industries";
 import Testimonials from "./homepage/sections/Testimonials";
 import Stats from "./homepage/sections/Stats";
@@ -25,14 +26,18 @@ export default function HomePage() {
           <Services />
           <Evolve />
         </div>
-        <Work />
-        <About />
-        <Industries />
-        <Testimonials />
-        <Stats />
-        <Portfolio />
-        <FAQ />
-        <Contact />
+        {/* ── Second macro-section: unified dark canvas ── */}
+        <div style={{ background: "linear-gradient(180deg, #000028 0%, #00041a 40%, #000010 100%)" }}>
+          <Work />
+          <About />
+          <Process />
+          <Industries />
+          <Testimonials />
+          <Stats />
+          <Portfolio />
+          <FAQ />
+          <Contact />
+        </div>
       </main>
       <Footer />
     </>
