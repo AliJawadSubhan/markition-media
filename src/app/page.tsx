@@ -24,8 +24,8 @@ export default function HomePage() {
           <Ticker />
           <Services />
           <Evolve />
+          <Work />
         </div>
-        <Work />
         <About />
         <Industries />
         <Testimonials />

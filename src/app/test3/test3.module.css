@@ -1,0 +1,50 @@
+.page {
+  min-height: 320vh;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(0, 92, 255, 0.22), transparent 30rem),
+    linear-gradient(180deg, #000000 0%, #020518 50%, #000000 100%);
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 7rem 1rem 2rem;
+  pointer-events: none;
+}
+
+.frame {
+  position: relative;
+  width: min(1120px, 100%);
+  height: clamp(360px, 54vw, 660px);
+}
+
+.lottieMount {
+  width: 100%;
+  height: 100%;
+}
+
+.lottieMount canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 0.95rem;
+}
+
+.scrollSpace {
+  min-height: 320vh;
+}

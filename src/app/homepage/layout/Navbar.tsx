@@ -69,24 +69,24 @@ export default function Navbar() {
 
   return (
     /* Outer wrapper: transparent, just provides sticky + padding so the box floats */
-    <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
+    <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 pt-4 sm:pt-5">
 
       {/* Floating box */}
       <nav
-        className="max-w-[1200px] mx-auto flex items-center justify-between px-4 sm:px-5 py-3 rounded-xl gap-3"
+        className="max-w-[1480px] mx-auto flex items-center justify-between px-5 sm:px-8 py-4 rounded-2xl gap-4"
         style={floatStyle}
       >
         {/* Logo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/markition-logo.svg" alt="Markition" className="h-[24px] sm:h-[26px] w-auto flex-shrink-0" />
+        <img src="/markition-logo.svg" alt="Markition" className="h-[28px] sm:h-[32px] w-auto flex-shrink-0" />
 
         {/* Desktop links */}
-        <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 text-[13px] text-white/80 font-normal flex-1 justify-center">
+        <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-[14px] text-white/80 font-normal flex-1 justify-center">
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}
               href="#"
-              className="flex items-center gap-1 whitespace-nowrap px-2.5 py-1.5 rounded-lg hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
+              className="flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
             >
               {link.label}
               {"dropdown" in link && link.dropdown && <ChevronDown />}
@@ -95,10 +95,10 @@ export default function Navbar() {
         </div>
 
         {/* CTA + hamburger */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-3 flex-shrink-0">
           <a
             href="#"
-            className="hidden sm:flex items-center gap-2 text-white text-[12.5px] font-medium px-3.5 py-1.5 rounded-[6px] transition-colors duration-150 hover:bg-white/[0.12] whitespace-nowrap"
+            className="hidden sm:flex items-center gap-2 text-white text-[13px] font-medium px-4 py-2 rounded-[8px] transition-colors duration-150 hover:bg-white/[0.12] whitespace-nowrap"
             style={ctaStyle}
           >
             <StaircaseIcon />
@@ -110,7 +110,7 @@ export default function Navbar() {
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
-            className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-white/[0.08] transition-colors"
+            className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg hover:bg-white/[0.08] transition-colors"
           >
             <HamburgerIcon open={mobileOpen} />
           </button>
