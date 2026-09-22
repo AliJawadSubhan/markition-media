@@ -55,10 +55,10 @@ const STEPS = [
   },
 ];
 
-const BAR_HEIGHTS = [52, 80, 112, 148, 188, 234, 286, 348];
+// 34 bars: dot → tiny → ascending → tallest on far right
+// 7 left-side visible, 20 hidden behind card, 7 right-side visible
+const BAR_HEIGHTS = [3, 3, 4, 5, 5, 6, 7, 8, 10, 11, 13, 15, 17, 20, 23, 27, 31, 36, 42, 49, 56, 65, 75, 87, 101, 117, 136, 157, 182, 211, 244, 282, 327, 380];
 const BAR_W       = 3;
-const BAR_GAP     = 14;
-const LEFT_BARS   = [28, 40, 55, 72, 92, 116];
 const NAV_H       = 56;
 
 // Each step has 3 scroll phases: card show → dot 1 fills → dot 2 fills → next step
@@ -69,6 +69,9 @@ export default function Process() {
   const sectionRef                      = useRef<HTMLDivElement>(null);
   const stepRef                         = useRef(0);
   const dotPhaseRef                     = useRef(0);
+  const barsRef                         = useRef<(HTMLDivElement | null)[]>([]);
+  const cursorDotRef                    = useRef<HTMLDivElement | null>(null);
+  const tiltRef                         = useRef<HTMLDivElement | null>(null);
   const [step, setStep]                 = useState(0);
   const [dotPhase, setDotPhase]         = useState(0); // 0, 1, or 2 dots lit for current gap
   const [cardVisible, setCardVisible]   = useState(true);
@@ -81,6 +84,34 @@ export default function Process() {
       const total    = el.offsetHeight - window.innerHeight;
       const scrolled = Math.max(0, Math.min(total, -rect.top));
 
+      // ── Continuous bar + cursor animation (direct DOM, no React re-render) ──
+      const barProgress = (scrolled / total) * BAR_HEIGHTS.length; // 0 → N continuous float
+
+      barsRef.current.forEach((bar, i) => {
+        if (!bar) return;
+        const fill = Math.max(0, Math.min(1, barProgress - i));
+        bar.style.background = `rgba(255,255,255,${(0.15 + fill * 0.43).toFixed(3)})`;
+      });
+
+      const cursor = cursorDotRef.current;
+      if (cursor) {
+        if (barProgress <= 0) {
+          cursor.style.opacity = "0";
+        } else {
+          const clamped = Math.min(barProgress, BAR_HEIGHTS.length - 0.001);
+          const floor   = Math.floor(clamped);
+          const frac    = clamped - floor;
+          const h1      = BAR_HEIGHTS[floor];
+          const h2      = BAR_HEIGHTS[Math.min(floor + 1, BAR_HEIGHTS.length - 1)];
+          const cursorH = h1 + frac * (h2 - h1);
+          const leftPct = (clamped / (BAR_HEIGHTS.length - 1)) * 100;
+          cursor.style.opacity = "1";
+          cursor.style.bottom  = `${cursorH + 10}px`;
+          cursor.style.left    = `calc(${leftPct}% - 4px)`;
+        }
+      }
+
+      // ── Discrete step/dotPhase for card and nav dots ──
       const rawPhase   = (scrolled / total) * TOTAL_PHASES;
       const phaseIndex = Math.min(TOTAL_PHASES - 1, Math.floor(rawPhase));
 
@@ -96,7 +127,7 @@ export default function Process() {
           setStep(newStep);
           setDotPhase(newDotPhase);
           setCardVisible(true);
-        }, 150);
+        }, 220);
       } else if (newDotPhase !== dotPhaseRef.current) {
         // Only dots change — no card animation
         dotPhaseRef.current = newDotPhase;
@@ -115,11 +146,27 @@ export default function Process() {
     return 0;                              // haven't reached this gap yet
   }
 
-  // Each of the 8 bars maps to one of the 8 dot-fills (4 gaps × 2 dots)
-  // so bars and dots advance in perfect sync
-  const barsLit    = step * 2 + dotPhase;
   const isLastStep = step === STEPS.length - 1;
   const s          = STEPS[step];
+
+  function onCardMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const el = tiltRef.current;
+    if (!el) return;
+    const rect  = el.getBoundingClientRect();
+    const x     = (e.clientX - rect.left)  / rect.width;   // 0→1
+    const y     = (e.clientY - rect.top)   / rect.height;  // 0→1
+    const rotX  = (y - 0.5) * -16; // top → negative rotX → top tilts back
+    const rotY  = (x - 0.5) *  16; // right → positive rotY → right tilts back
+    el.style.transition = "transform 0.08s ease-out";
+    el.style.transform  = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  }
+
+  function onCardMouseLeave() {
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.transition = "transform 0.5s cubic-bezier(0.16,1,0.3,1)";
+    el.style.transform  = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+  }
 
   return (
     <section
@@ -165,73 +212,148 @@ export default function Process() {
           <h2
             style={{
               margin: 0,
-              fontSize: "clamp(30px,4vw,58px)",
-              fontWeight: 800,
+              fontSize: "clamp(32px, 4.5vw, 58px)",
+              fontWeight: 400,
+              fontStyle: "normal",
               color: "#ffffff",
-              letterSpacing: "-2px",
-              lineHeight: 1.06,
-              fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+              letterSpacing: "-3.5px",
+              lineHeight: 1.05,
+              fontFamily: "var(--font-familjen), sans-serif",
+              textAlign: "center",
+              textTransform: "capitalize",
             }}
           >
-            How we build your brand
+            How we build<br />your growth system
           </h2>
         </div>
 
-        {/* ── Card + side bars row ── */}
+        {/* ── Card + bars ── */}
         <div
           style={{
             flex: 1,
             minHeight: 0,
             width: "100%",
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-end",
             justifyContent: "center",
-            gap: "clamp(16px,2.5vw,36px)",
-            padding: "0 clamp(16px,4vw,60px)",
+            padding: "0 clamp(16px,4vw,60px) 20px",
             boxSizing: "border-box",
           }}
         >
-          {/* ── Left decorative bars ── */}
+          {/* ── Card wrapper (bars sit inside here, behind card content) ── */}
           <div
-            aria-hidden="true"
             style={{
-              display: "flex",
-              alignItems: "flex-end",
-              gap: BAR_GAP,
+              position: "relative",
+              width: "clamp(320px,52vw,660px)",
               flexShrink: 0,
-              alignSelf: "flex-end",
-              paddingBottom: 8,
-              flexDirection: "row-reverse",
             }}
           >
-            {LEFT_BARS.map((h, i) => (
+            {/* ── Bars behind card — span full card width, anchored to card bottom ── */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: "-200px",
+                right: "-200px",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                zIndex: 0,
+                pointerEvents: "none",
+              }}
+            >
+              {/* Cursor dot — positioned directly via ref in scroll handler */}
               <div
-                key={i}
+                ref={cursorDotRef}
                 style={{
-                  width: BAR_W,
-                  height: h,
-                  flexShrink: 0,
-                  borderRadius: 2,
-                  background: "rgba(255,255,255,0.13)",
+                  position: "absolute",
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#ffffff",
+                  boxShadow: "0 0 10px 3px rgba(255,255,255,0.45)",
+                  bottom: 0,
+                  left: -4,
+                  opacity: 0,
+                  pointerEvents: "none",
                 }}
               />
-            ))}
-          </div>
+              {BAR_HEIGHTS.map((h, i) => {
+                const isLast = i === BAR_HEIGHTS.length - 1;
+                return (
+                  <div
+                    key={i}
+                    style={{ position: "relative", width: BAR_W, height: h, flexShrink: 0 }}
+                  >
+                    {isLast && isLastStep && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: "#ffffff",
+                          color: "#0a1433",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          padding: "3px 9px",
+                          borderRadius: 20,
+                          whiteSpace: "nowrap",
+                          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
+                          opacity: cardVisible ? 1 : 0,
+                          transition: "opacity 0.4s ease 0.2s",
+                          zIndex: 10,
+                        }}
+                      >
+                        Top 1%
+                      </div>
+                    )}
+                    {/* fill div — background set directly via ref in scroll handler */}
+                    <div
+                      ref={(el) => { barsRef.current[i] = el; }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: 2,
+                        background: "rgba(255,255,255,0.15)",
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
 
-          {/* ── Card ── */}
-          <div
-            key={step}
-            style={{
-              width: "clamp(320px,52vw,660px)",
-              borderRadius: 20,
-              overflow: "hidden",
-              flexShrink: 0,
-              boxShadow: "0 24px 72px rgba(0,0,20,0.6)",
-              opacity: cardVisible ? 1 : 0,
-              transform: cardVisible ? "translateY(0) scale(1)" : "translateY(10px) scale(0.97)",
-              transition: "opacity 0.22s ease, transform 0.22s ease",
-            }}
-          >
+            {/* ── Tilt wrapper — handles 3D mouse tilt, stable across step changes ── */}
+            <div
+              ref={tiltRef}
+              onMouseMove={onCardMouseMove}
+              onMouseLeave={onCardMouseLeave}
+              style={{
+                position: "relative",
+                zIndex: 1,
+                transformStyle: "preserve-3d",
+                willChange: "transform",
+              }}
+            >
+            {/* ── Card face — only this element animates on step change ── */}
+            <div
+              key={step}
+              style={{
+                borderRadius: 20,
+                overflow: "hidden",
+                boxShadow: "0 24px 72px rgba(0,0,20,0.6)",
+                opacity: cardVisible ? 1 : 0,
+                transform: cardVisible
+                  ? "translateY(0) scale(1)"
+                  : "translateY(28px) scale(0.92)",
+                filter: cardVisible ? "blur(0px)" : "blur(8px)",
+                transition: cardVisible
+                  ? "opacity 0.48s cubic-bezier(0.16,1,0.3,1), transform 0.52s cubic-bezier(0.16,1,0.3,1), filter 0.4s ease"
+                  : "opacity 0.2s ease-in, transform 0.2s ease-in, filter 0.18s ease-in",
+              }}
+            >
             {/* ── Top zone: gradient + 3D model ── */}
             <div
               style={{
@@ -365,88 +487,8 @@ export default function Process() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* ── Right animated bars ── */}
-          <div
-            aria-hidden="true"
-            style={{
-              position: "relative",
-              display: "flex",
-              alignItems: "flex-end",
-              gap: BAR_GAP,
-              flexShrink: 0,
-              alignSelf: "flex-end",
-              paddingBottom: 8,
-              paddingTop: 28,
-            }}
-          >
-            {/* Cursor dot — slides to the top of the last lit bar */}
-            <div
-              style={{
-                position: "absolute",
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "#ffffff",
-                boxShadow: "0 0 10px 3px rgba(255,255,255,0.45)",
-                bottom: barsLit > 0
-                  ? 8 + BAR_HEIGHTS[barsLit - 1] + 10
-                  : 8,
-                left: barsLit > 0
-                  ? (barsLit - 1) * (BAR_W + BAR_GAP) - 2.5
-                  : -2.5,
-                opacity: barsLit > 0 ? 1 : 0,
-                transition: "bottom 0.45s ease, left 0.45s ease, opacity 0.3s ease",
-                pointerEvents: "none",
-              }}
-            />
-
-            {BAR_HEIGHTS.map((h, i) => {
-              const isLast   = i === BAR_HEIGHTS.length - 1;
-              const isActive = i < barsLit;
-              return (
-                <div
-                  key={i}
-                  style={{ position: "relative", width: BAR_W, height: h, flexShrink: 0 }}
-                >
-                  {isLast && isLastStep && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: "calc(100% + 8px)",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        background: "#ffffff",
-                        color: "#0a1433",
-                        fontSize: 11,
-                        fontWeight: 700,
-                        padding: "3px 9px",
-                        borderRadius: 20,
-                        whiteSpace: "nowrap",
-                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
-                        opacity: cardVisible ? 1 : 0,
-                        transition: "opacity 0.4s ease 0.2s",
-                      }}
-                    >
-                      Top 1%
-                    </div>
-                  )}
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: 2,
-                      background: isActive
-                        ? "rgba(255,255,255,0.58)"
-                        : "rgba(255,255,255,0.15)",
-                      transition: "background 0.45s ease",
-                    }}
-                  />
-                </div>
-              );
-            })}
+            </div>
+            </div>{/* end tilt wrapper */}
           </div>
         </div>
 

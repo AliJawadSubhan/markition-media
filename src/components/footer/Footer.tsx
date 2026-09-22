@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer>
       {/* ── Main body ── */}
-      <div style={{ background: "#000028", padding: "72px 0 56px" }}>
+      <div style={{ background: "#020a1c", padding: "72px 0 56px" }}>
         <div
           style={{
             maxWidth: 1200,
@@ -74,7 +74,7 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div style={{ background: "#00061a", padding: "16px 32px" }}>
+      <div style={{ background: "#010610", padding: "16px 32px" }}>
         <div
           style={{
             maxWidth: 1200,

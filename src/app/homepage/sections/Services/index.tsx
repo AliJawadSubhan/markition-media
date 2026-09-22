@@ -53,8 +53,8 @@ export default function Services() {
             <div
               key={card.title}
               className="flex flex-col items-center justify-center rounded-2xl px-6 py-6 sm:px-8 sm:py-8 cursor-pointer group transition-shadow duration-200"
-              style={{ gap: 0 }}
               style={{
+                gap: 0,
                 background: "#ffffff",
                 boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
               }}

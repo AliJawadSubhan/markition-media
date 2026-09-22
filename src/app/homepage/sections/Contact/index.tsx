@@ -20,7 +20,7 @@ export default function Contact() {
   }
 
   return (
-    <section style={{ background: "#000028", padding: "100px 0 110px" }}>
+    <section style={{ padding: "100px 0 110px" }}>
       <div
         style={{
           maxWidth: 1200,
@@ -104,7 +104,7 @@ export default function Contact() {
             <div
               style={{
                 flex: 1,
-                background: "#060e2a",
+                background: "#0d1e48",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -192,14 +192,14 @@ export default function Contact() {
                   WebkitAppearance: "none",
                 }}
               >
-                <option value="" disabled style={{ background: "#060e2a" }}>
+                <option value="" disabled style={{ background: "#0d1e48" }}>
                   Select a Service
                 </option>
-                <option value="web-design"    style={{ background: "#060e2a" }}>Web Design</option>
-                <option value="seo"           style={{ background: "#060e2a" }}>SEO Optimization</option>
-                <option value="social-media"  style={{ background: "#060e2a" }}>Social Media Marketing</option>
-                <option value="paid-ads"      style={{ background: "#060e2a" }}>Paid Advertising</option>
-                <option value="content"       style={{ background: "#060e2a" }}>Content Marketing</option>
+                <option value="web-design"    style={{ background: "#0d1e48" }}>Web Design</option>
+                <option value="seo"           style={{ background: "#0d1e48" }}>SEO Optimization</option>
+                <option value="social-media"  style={{ background: "#0d1e48" }}>Social Media Marketing</option>
+                <option value="paid-ads"      style={{ background: "#0d1e48" }}>Paid Advertising</option>
+                <option value="content"       style={{ background: "#0d1e48" }}>Content Marketing</option>
               </select>
               {/* Chevron */}
               <svg

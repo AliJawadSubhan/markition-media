@@ -203,15 +203,15 @@ export default function Work() {
       const { distance, maxX } = scrollMetricsRef.current;
 
       if (!mediaQuery.matches || distance <= 0) {
-        track.style.transform = "";
+        track!.style.transform = "";
         return;
       }
 
-      const sectionTop = section.offsetTop;
+      const sectionTop = section!.offsetTop;
       const rawProgress = (window.scrollY - sectionTop) / distance;
       const progress = Math.min(1, Math.max(0, rawProgress));
 
-      track.style.transform = `translate3d(${-progress * maxX}px, 0, 0)`;
+      track!.style.transform = `translate3d(${-progress * maxX}px, 0, 0)`;
     }
 
     function scheduleUpdate() {
@@ -223,11 +223,11 @@ export default function Work() {
       if (!mediaQuery.matches) {
         scrollMetricsRef.current = { distance: 0, maxX: 0 };
         setPinHeight(null);
-        track.style.transform = "";
+        track!.style.transform = "";
         return;
       }
 
-      const maxX = Math.max(0, track.scrollWidth - viewport.clientWidth);
+      const maxX = Math.max(0, track!.scrollWidth - viewport!.clientWidth);
       scrollMetricsRef.current = { distance: maxX, maxX };
       setPinHeight(window.innerHeight + maxX);
       scheduleUpdate();

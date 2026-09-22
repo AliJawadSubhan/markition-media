@@ -19,7 +19,7 @@ export default function HomePage() {
     <>
       <main>
         {/* ── First macro-section: one unified gradient ── */}
-        <div style={{ background: "linear-gradient(180deg, #000218 4%, #1964D1 55%, #0A1A5C 72%, #000028 82%, #F5F5F7 97%)" }}>
+        <div style={{ background: "linear-gradient(180deg, #010c28 4%, #1964D1 55%, #0d2258 72%, #06163a 82%, #0c1e40 97%)" }}>
           <Hero />
           <HeroShowcase />
           <Ticker />
@@ -28,7 +28,7 @@ export default function HomePage() {
           <Work />
         </div>
         {/* ── Second macro-section: unified dark canvas ── */}
-        <div style={{ background: "linear-gradient(180deg, #000028 0%, #00041a 40%, #000010 100%)" }}>
+        <div style={{ background: "linear-gradient(180deg, #0c1e40 0%, #060f28 40%, #020a1c 100%)" }}>
           <About />
           <Process />
           <Industries />

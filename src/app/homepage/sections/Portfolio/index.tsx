@@ -38,7 +38,7 @@ function cardZ(d: number) {
 
 export default function Portfolio() {
   const refs      = useRef<(HTMLDivElement | null)[]>([]);
-  const rafRef    = useRef<number>();
+  const rafRef    = useRef<number>(0);
   const rotRef    = useRef(0);       // accumulated wheel rotation
   const velRef    = useRef(0);       // momentum velocity (deg/ms)
   const dragging  = useRef(false);
@@ -46,10 +46,13 @@ export default function Portfolio() {
   const lastT     = useRef(0);
   const lastDX    = useRef(0);
 
+  const [mounted, setMounted]   = useState(false);
   const [hovered, setHovered]   = useState(false);
   const [pressed, setPressed]   = useState(false);
   const [showSpin, setShowSpin] = useState(false);
-  const spinTimer               = useRef<ReturnType<typeof setTimeout>>();
+  const spinTimer               = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     let prevT = performance.now();
@@ -127,13 +130,29 @@ export default function Portfolio() {
         width: "100%",
         height: SECTION_H,
         overflow: "hidden",
-        background: "linear-gradient(180deg, #4a8ce0 0%, #2060c8 30%, #0d2a80 65%, #050e2a 100%)",
+        background: "linear-gradient(180deg, #000028 0%, #1a4db8 20%, #4a8ce0 45%, #6aaaf5 55%, #1a4db8 80%, #000028 100%)",
         cursor: dragging.current ? "grabbing" : "grab",
         userSelect: "none",
       }}
     >
-      {/* ── Cards ────────────────────────────────────────────────── */}
-      {BASE_ANGLES.map((base, i) => (
+      {/* ── Top blend: dark wrapper → section ── */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0,
+        height: 120,
+        background: "linear-gradient(180deg, #0c1e40 0%, transparent 100%)",
+        zIndex: 30,
+        pointerEvents: "none",
+      }} />
+      {/* ── Bottom blend: section → dark wrapper ── */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        height: 120,
+        background: "linear-gradient(0deg, #020a1c 0%, transparent 100%)",
+        zIndex: 30,
+        pointerEvents: "none",
+      }} />
+      {/* ── Cards — client-only to avoid SSR floating-point hydration mismatch ── */}
+      {mounted && BASE_ANGLES.map((base, i) => (
         <div
           key={i}
           ref={(el) => { refs.current[i] = el; }}
@@ -141,7 +160,7 @@ export default function Portfolio() {
             position:        "absolute",
             left:            cardLeft(base),
             top:             cardTop(base),
-            width:           CARD_W,
+            width:           `${CARD_W}px`,
             overflow:        "hidden",
             zIndex:          cardZ(base),
             transform:       `rotate(${base}deg)`,

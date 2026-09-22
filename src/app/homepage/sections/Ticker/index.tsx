@@ -19,7 +19,7 @@ export default function Ticker() {
       <div
         className="relative overflow-hidden"
         style={{
-          background: "#082255",
+          background: "#0d2d6b",
           border: "1px solid #334155",
           boxShadow: "0px 20px 67.5px -16.2px #2B7FFF26",
           backdropFilter: "blur(32.4px)",
@@ -48,11 +48,11 @@ export default function Ticker() {
 
         <div
           className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-20 z-10"
-          style={{ background: "linear-gradient(to right, #082255 0%, rgba(8,34,85,0) 100%)" }}
+          style={{ background: "linear-gradient(to right, #0d2d6b 0%, rgba(13,45,107,0) 100%)" }}
         />
         <div
           className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-20 z-10"
-          style={{ background: "linear-gradient(to left, #082255 0%, rgba(8,34,85,0) 100%)" }}
+          style={{ background: "linear-gradient(to left, #0d2d6b 0%, rgba(13,45,107,0) 100%)" }}
         />
       </div>
 
