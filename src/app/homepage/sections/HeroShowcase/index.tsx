@@ -1,25 +1,14 @@
 export default function HeroShowcase() {
   return (
-    <section
-      className="relative w-full"
-      style={{ background: "#000218" }}
-    >
-      {/* Blue radial glow — continues from Hero */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 80% at 50% 0%, rgba(25,100,209,0.4) 0%, transparent 65%)",
-        }}
-      />
+    <section className="relative w-full">
 
       {/* Mockup card — no clipping, rounds on all sides */}
-      <div className="relative z-10 max-w-[1100px] mx-auto px-6 sm:px-10 pb-0">
+      <div className="relative z-10 max-w-[1100px] mx-auto px-6 sm:px-10 pb-10 sm:pb-14 pt-4">
         <div
           className="relative w-full rounded-2xl overflow-hidden"
           style={{
             background: "#e8edf5",
-            minHeight: "380px",
+            minHeight: "680px",
             boxShadow: "0 0 80px rgba(25,100,209,0.25), 0 2px 40px rgba(0,0,0,0.3)",
           }}
         >

@@ -1,23 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Instrument_Serif, Familjen_Grotesk } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans, Familjen_Grotesk, Instrument_Serif } from "next/font/google";
+import Navbar from "./homepage/layout/Navbar";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const familjenGrotesk = Familjen_Grotesk({
-  variable: "--font-familjen-grotesk",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
-  weight: "400",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
+const familjen = Familjen_Grotesk({
+  variable: "--font-familjen",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400"],
 });
 
 const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+  variable: "--font-instrument",
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+  display: "swap",
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -31,8 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${instrumentSerif.variable} ${familjenGrotesk.variable}`}>
-      <body className="min-h-screen">{children}</body>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable} ${familjen.variable} ${instrumentSerif.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-[#000218] text-white" suppressHydrationWarning>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

@@ -69,7 +69,7 @@ export default function Navbar() {
 
   return (
     /* Outer wrapper: transparent, just provides sticky + padding so the box floats */
-    <div className="sticky top-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
+    <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
 
       {/* Floating box */}
       <nav
