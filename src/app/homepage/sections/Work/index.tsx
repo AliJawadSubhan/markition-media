@@ -145,12 +145,12 @@ function ProjectCard({ project }: { project: Project }) {
 
       {/* Title row */}
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-xs font-semibold text-[#05051f] sm:text-sm">
+        <h3 className="text-xs font-semibold text-white sm:text-sm">
           {project.title}
         </h3>
         <span className={`work-card-chevron flex-shrink-0 ${open ? "is-open" : ""}`} aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6L8 10L12 6" stroke="#05051f" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 6L8 10L12 6" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
@@ -166,7 +166,7 @@ function ProjectCard({ project }: { project: Project }) {
       >
         <div ref={innerRef}>
           <p
-            className="pt-2 text-[11px] leading-relaxed text-[#3a3a4a] sm:text-xs"
+            className="pt-2 text-[11px] leading-relaxed text-white/60 sm:text-xs"
             style={{
               transform: open ? "translateY(0)" : "translateY(8px)",
               transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
