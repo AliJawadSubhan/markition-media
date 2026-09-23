@@ -89,12 +89,52 @@ function ProjectButton() {
 export default function Industries() {
   return (
     <section
+      className="section-gap-md"
       style={{
         padding: "0 clamp(24px,5vw,80px)",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .industries-heading {
+            font-size: clamp(26px, 7vw, 48px) !important;
+            line-height: 1.05 !important;
+            letter-spacing: -1.5px !important;
+            margin-bottom: 32px !important;
+          }
+          .industries-grid {
+            flex-wrap: wrap !important;
+          }
+          .industries-col {
+            flex: 0 0 100% !important;
+            border-left: none !important;
+            border-top: 1px solid rgba(255,255,255,0.15) !important;
+          }
+          .industries-col:first-child {
+            border-top: none !important;
+          }
+        }
+        @media (min-width: 480px) and (max-width: 767px) {
+          .industries-col {
+            flex: 0 0 50% !important;
+            box-sizing: border-box !important;
+          }
+          .industries-col:nth-child(1),
+          .industries-col:nth-child(2) {
+            border-top: none !important;
+          }
+          .industries-col:nth-child(odd) {
+            border-left: none !important;
+          }
+          .industries-col:nth-child(even) {
+            border-left: 1px solid rgba(255,255,255,0.15) !important;
+          }
+        }
+      `}</style>
+
       {/* Heading */}
       <h2
+        className="industries-heading"
         style={{
           fontFamily: "var(--font-familjen-grotesk), system-ui, sans-serif",
           fontWeight: 400,
@@ -111,10 +151,11 @@ export default function Industries() {
       </h2>
 
       {/* Columns */}
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex" }} className="industries-grid">
         {INDUSTRIES.map((item, i) => (
           <div
             key={i}
+            className="industries-col"
             style={{
               flex: 1,
               borderLeft: i === 0 ? "none" : "1px solid rgba(255,255,255,0.15)",

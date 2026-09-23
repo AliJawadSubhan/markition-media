@@ -56,6 +56,7 @@ export default function FAQ() {
 
   return (
     <section
+      className="section-gap-md"
       style={{
         padding: "100px 0 80px",
       }}

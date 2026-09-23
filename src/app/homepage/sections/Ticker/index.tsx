@@ -13,7 +13,7 @@ const items = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS];
 
 export default function Ticker() {
   return (
-    <section className="relative z-10 w-full">
+    <section className="relative z-10 w-full section-gap-md">
 
       {/* Glass ticker strip */}
       <div

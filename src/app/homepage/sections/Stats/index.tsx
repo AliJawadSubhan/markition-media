@@ -15,9 +15,40 @@ const STATS = [
 
 export default function Stats() {
   return (
-    <section style={{ padding: "0 clamp(24px, 5vw, 80px)" }}>
+    <section className="stats-section" style={{ padding: "0 clamp(24px, 5vw, 80px)" }}>
+      <style>{`
+        /* Testimonials centers its cards symmetrically, so it can't
+           contribute the standard "0 top" side of the uniform inter-section
+           gap — it contributes 0 on both sides instead. Stats makes up the
+           other section's half here with a custom 80px top (instead of the
+           usual 0), so Testimonials→Stats still comes out to 80px total,
+           matching every other adjacent-section gap on desktop. */
+        @media (min-width: 768px) {
+          .stats-section {
+            padding-top: 80px !important;
+            padding-bottom: 80px !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .stats-rule-top {
+            padding-top: 48px !important;
+            margin-bottom: 32px !important;
+          }
+          .stats-grid {
+            grid-template-columns: 1fr !important;
+            gap: 36px !important;
+          }
+          .stats-number {
+            font-size: 52px !important;
+            line-height: 60px !important;
+            margin-bottom: 10px !important;
+          }
+        }
+      `}</style>
+
       {/* Top rule + label */}
       <div
+        className="stats-rule-top"
         style={{
           display: "flex",
           alignItems: "center",
@@ -43,6 +74,7 @@ export default function Stats() {
 
       {/* Stats row */}
       <div
+        className="stats-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
@@ -55,6 +87,7 @@ export default function Stats() {
         {STATS.map((s, i) => (
           <div key={i}>
             <p
+              className="stats-number"
               style={{
                 margin: "0 0 16px",
                 fontFamily: "var(--font-instrument-serif), Georgia, serif",

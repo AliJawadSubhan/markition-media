@@ -3,9 +3,32 @@ import Image from "next/image";
 export default function Footer() {
   return (
     <footer>
+      <style>{`
+        @media (max-width: 767px) {
+          .footer-main { padding: 48px 0 40px !important; }
+          .footer-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 36px 20px !important;
+            padding: 0 20px !important;
+          }
+          .footer-bottom { padding: 14px 20px !important; }
+          .footer-bottom-inner {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+          }
+        }
+        @media (max-width: 479px) {
+          .footer-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+
       {/* ── Main body ── */}
-      <div style={{ background: "#020a1c", padding: "72px 0 56px" }}>
+      <div className="footer-main" style={{ background: "#020a1c", padding: "72px 0 56px" }}>
         <div
+          className="footer-grid"
           style={{
             maxWidth: 1200,
             margin: "0 auto",
@@ -74,8 +97,9 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div style={{ background: "#010610", padding: "16px 32px" }}>
+      <div className="footer-bottom" style={{ background: "#010610", padding: "16px 32px" }}>
         <div
+          className="footer-bottom-inner"
           style={{
             maxWidth: 1200,
             margin: "0 auto",

@@ -50,9 +50,17 @@ export default function Portfolio() {
   const [hovered, setHovered]   = useState(false);
   const [pressed, setPressed]   = useState(false);
   const [showSpin, setShowSpin] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const spinTimer               = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     let prevT = performance.now();
@@ -90,6 +98,93 @@ export default function Portfolio() {
     rafRef.current = requestAnimationFrame(tick);
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
+
+  // ─── Mobile render ────────────────────────────────────────────────────────────
+  const mobileRow1 = [...FILES, ...FILES, ...FILES];
+  const mobileRow2 = [...FILES].reverse().concat([...FILES].reverse(), [...FILES].reverse());
+
+  if (isMobile) {
+    return (
+      <section
+        style={{
+          position: "relative",
+          width: "100%",
+          overflow: "hidden",
+          background: "linear-gradient(180deg, #000028 0%, #1a4db8 20%, #4a8ce0 45%, #6aaaf5 55%, #1a4db8 80%, #000028 100%)",
+          paddingTop: 56,
+          paddingBottom: 64,
+          userSelect: "none",
+        }}
+      >
+        <style>{`
+          @keyframes portfolio-scroll-left {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-33.333%); }
+          }
+          @keyframes portfolio-scroll-right {
+            from { transform: translateX(-33.333%); }
+            to   { transform: translateX(0); }
+          }
+          .port-row-left  { animation: portfolio-scroll-left  22s linear infinite; }
+          .port-row-right { animation: portfolio-scroll-right 18s linear infinite; }
+        `}</style>
+
+        {/* Top gradient blend */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 80, background: "linear-gradient(180deg, #0c1e40 0%, transparent 100%)", zIndex: 10, pointerEvents: "none" }} />
+        {/* Bottom gradient blend */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80, background: "linear-gradient(0deg, #020a1c 0%, transparent 100%)", zIndex: 10, pointerEvents: "none" }} />
+
+        {/* Row 1 — scrolls left */}
+        <div style={{ overflow: "hidden", marginBottom: 10, maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)" }}>
+          <div className="port-row-left" style={{ display: "flex", gap: 10, width: "max-content" }}>
+            {mobileRow1.map((file, i) => (
+              <div key={i} style={{ flexShrink: 0, width: 130, borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/portfolio/${file}`} alt="" draggable={false} style={{ width: "100%", height: "auto", display: "block" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 — scrolls right */}
+        <div style={{ overflow: "hidden", maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)" }}>
+          <div className="port-row-right" style={{ display: "flex", gap: 10, width: "max-content" }}>
+            {mobileRow2.map((file, i) => (
+              <div key={i} style={{ flexShrink: 0, width: 130, borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.35)" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/portfolio/${file}`} alt="" draggable={false} style={{ width: "100%", height: "auto", display: "block" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Heading + CTA centered */}
+        <div style={{ position: "relative", zIndex: 20, textAlign: "center", padding: "32px 24px 0" }}>
+          <h2 style={{ margin: "0 0 14px", fontSize: "clamp(28px, 7vw, 40px)", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.15, fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}>
+            Ready to grow your<br />digital presence?
+          </h2>
+          <p style={{ margin: "0 0 24px", fontSize: 14, fontWeight: 400, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 320, marginInline: "auto", fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}>
+            Let&apos;s turn your marketing into a system that attracts, converts, and keeps improving
+          </p>
+          <a
+            href="/contact"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 10,
+              background: "linear-gradient(135deg,#060c28,#132060)",
+              color: "#fff", fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+              fontSize: 15, fontWeight: 700, padding: "13px 32px", borderRadius: 50,
+              textDecoration: "none", letterSpacing: "0.04em",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 4px 24px rgba(0,10,60,0.6), inset 0 1px 0 rgba(255,255,255,0.08)",
+            }}
+          >
+            <span>Start A Project</span>
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: "50%", background: "rgba(255,255,255,0.12)", fontSize: 13 }}>→</span>
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   function onPointerDown(e: React.PointerEvent<HTMLElement>) {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);

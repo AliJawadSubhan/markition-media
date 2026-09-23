@@ -47,6 +47,45 @@ body {
   to   { transform: translateX(-50%); }
 }
 
+/* ── Global mobile fixes ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Prevent any section from causing horizontal overflow.
+     Use clip (not hidden) so we don't accidentally create a scroll container
+     that breaks position:sticky inside sections like #process. */
+  section {
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  /* Hero heading tight tracking on small screens */
+  [data-hero] h1 {
+    letter-spacing: clamp(-2px, -0.4vw, -1px) !important;
+  }
+
+  /* Ticker trust line: allow wrapping on very small screens */
+  .ticker-trust-inner {
+    gap: 8px !important;
+  }
+
+  /* Evolve review quote — shrink on mobile */
+  .review-quote {
+    font-size: 20px !important;
+    width: min(100%, 94%) !important;
+    margin-top: 10px !important;
+    margin-bottom: 18px !important;
+  }
+
+  /* Work section — ensure touch scroll hint is visible */
+  .work-scroll-viewport {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* FAQ — tighter top padding */
+  #faq-section {
+    padding-top: 64px !important;
+  }
+}
+
 .ticker-track {
   animation: ticker-scroll 28s linear infinite;
   will-change: transform;
@@ -54,4 +93,31 @@ body {
 
 .ticker-track:hover {
   animation-play-state: paused;
+}
+
+/* ── Uniform inter-section gap on desktop ──────────────────────
+   Each section's own top/bottom spacing was tuned independently
+   (Tailwind classes here, inline px there), so the visible gap
+   between adjacent sections ranged from 0px to 180px. Forcing every
+   section to the same rule — 0 top, 80px bottom — makes the gap
+   between ANY two adjacent sections exactly 80px, since it's always
+   just "this section's bottom" (the next section always contributes 0).
+   !important so it wins over both Tailwind utility classes and
+   inline style="" padding without having to edit each one's markup. */
+/* Default: spacer is invisible on mobile */
+.section-gap-md-spacer {
+  height: 0;
+}
+
+@media (min-width: 768px) {
+  .section-gap-md {
+    padding-top: 0 !important;
+    padding-bottom: 80px !important;
+  }
+  /* For scroll-jacked / fixed-height sections (Work, Process, Portfolio)
+     whose own box height drives JS scroll/pin math — safer to add the
+     80px gap as a separate sibling spacer than to alter their padding. */
+  .section-gap-md-spacer {
+    height: 80px;
+  }
 }

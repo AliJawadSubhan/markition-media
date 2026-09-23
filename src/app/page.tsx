@@ -26,15 +26,25 @@ export default function HomePage() {
           <Services />
           <Evolve />
           <Work />
+          {/* Work is a scroll-jacked, JS-measured pin section — adding padding
+              to it directly could throw off its scroll-distance math, so the
+              uniform 80px desktop gap is added as an inert sibling instead. */}
+          <div className="section-gap-md-spacer" aria-hidden="true" />
         </div>
         {/* ── Second macro-section: unified dark canvas ── */}
         <div style={{ background: "linear-gradient(180deg, #0c1e40 0%, #060f28 40%, #020a1c 100%)" }}>
           <About />
           <Process />
+          {/* Same reasoning as Work above — Process's height drives its own
+              scroll-jacked step animation via getBoundingClientRect(). */}
+          <div className="section-gap-md-spacer" aria-hidden="true" />
           <Industries />
           <Testimonials />
           <Stats />
           <Portfolio />
+          {/* Portfolio has a fixed pixel height with absolutely-positioned
+              children keyed off it — same reasoning, spacer instead of padding. */}
+          <div className="section-gap-md-spacer" aria-hidden="true" />
           <FAQ />
           <Contact />
         </div>

@@ -50,7 +50,7 @@ function Logos() {
 function CardContent({ t }: { t: typeof TESTIMONIALS[0] }) {
   return (
     <>
-      <h2 style={{
+      <h2 className="testimonial-h2" style={{
         fontFamily: "var(--font-instrument), Georgia, serif",
         fontStyle: "italic", fontSize: "clamp(40px,5.5vw,72px)", fontWeight: 400,
         color: "#0a1833", lineHeight: 1.05, letterSpacing: "-2px",
@@ -196,13 +196,47 @@ export default function Testimonials() {
     textAlign: "center",
     display: "flex", flexDirection: "column", justifyContent: "center",
   };
+  const cardCls = "testimonial-card";
 
   return (
-    <section style={{ position:"relative", overflow:"hidden", padding:"80px 0 80px", minHeight: CARD_H + 160 }}>
-      <style>{kf}</style>
+    <section className="testimonials-section" style={{ position:"relative", overflow:"hidden", padding:"80px 0 80px", minHeight: CARD_H + 160 }}>
+      <style>{kf + `
+        /* Cards are absolutely centered (top:50% + translateY(-50%)), so the
+           gap above/below is always symmetric no matter how padding is
+           split — can't do "0 top / 80 bottom" like flow-layout sections.
+           Zero it out here instead: the uniform 80px inter-section gap on
+           each side comes entirely from the neighbor section's own edge
+           (Industries' bottom, and Stats' matching custom top). */
+        @media (min-width: 768px) {
+          .testimonials-section {
+            padding: 0 !important;
+            min-height: ${CARD_H}px !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .testimonial-card {
+            width: calc(100vw - 48px) !important;
+            max-width: 500px !important;
+            height: auto !important;
+            min-height: 520px !important;
+            padding: 36px 28px 28px !important;
+          }
+          .testimonial-nav-btn {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 20px !important;
+          }
+          .testimonial-nav-left  { left: 8px !important; }
+          .testimonial-nav-right { right: 8px !important; }
+          .testimonial-h2 {
+            font-size: clamp(30px, 8vw, 44px) !important;
+            margin-top: 28px !important;
+          }
+        }
+      `}</style>
 
       {/* ── Back card ──────────────────────────────────────────── */}
-      <div style={{
+      <div className={cardCls} style={{
         ...cardBase,
         background: "rgba(195,212,232,0.70)",
         boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
@@ -213,7 +247,7 @@ export default function Testimonials() {
       }} />
 
       {/* ── Mid card ───────────────────────────────────────────── */}
-      <div style={{
+      <div className={cardCls} style={{
         ...cardBase,
         background: "rgba(218,228,240,0.90)",
         boxShadow: midShadow,
@@ -228,6 +262,7 @@ export default function Testimonials() {
       {/* ── Front card ─────────────────────────────────────────── */}
       <div
         ref={frontRef}
+        className={cardCls}
         style={{
           ...cardBase,
           background: "#ffffff",
@@ -247,6 +282,7 @@ export default function Testimonials() {
         <button
           key={side}
           onClick={side === "left" ? goPrev : goNext}
+          className={`testimonial-nav-btn testimonial-nav-${side}`}
           style={{
             position: "absolute", top: "50%",
             [side]: 20,

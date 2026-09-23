@@ -1,9 +1,16 @@
 export default function HeroShowcase() {
   return (
     <section data-showcase className="relative w-full">
+      <style>{`
+        @media (max-width: 767px) {
+          [data-showcase-anim] {
+            min-height: 280px !important;
+          }
+        }
+      `}</style>
 
       {/* Mockup card — no clipping, rounds on all sides */}
-      <div className="relative z-10 max-w-[1100px] mx-auto px-6 sm:px-10 pb-10 sm:pb-14 pt-4">
+      <div className="relative z-10 max-w-[1100px] mx-auto px-6 sm:px-10 pb-10 sm:pb-14 pt-4 section-gap-md">
         <div
           data-showcase-anim
           className="relative w-full rounded-2xl overflow-hidden"

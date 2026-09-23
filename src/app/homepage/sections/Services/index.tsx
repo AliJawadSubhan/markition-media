@@ -8,7 +8,7 @@ const CARDS = [
 export default function Services() {
   return (
     <section
-      className="w-full px-6 sm:px-10 py-20 sm:py-28"
+      className="w-full px-6 sm:px-10 py-20 sm:py-28 section-gap-md"
       style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}
     >
       <div className="max-w-[1200px] mx-auto">

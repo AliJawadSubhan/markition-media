@@ -20,8 +20,26 @@ export default function Contact() {
   }
 
   return (
-    <section style={{ padding: "100px 0 110px" }}>
+    <section className="section-gap-md" style={{ padding: "100px 0 110px" }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .contact-section { padding: 64px 0 80px !important; }
+          .contact-grid {
+            grid-template-columns: 1fr !important;
+            gap: 44px !important;
+            padding: 0 20px !important;
+          }
+          .contact-form {
+            padding-left: 0 !important;
+          }
+          .contact-name-email-row {
+            grid-template-columns: 1fr !important;
+            gap: 22px !important;
+          }
+        }
+      `}</style>
       <div
+        className="contact-grid"
         style={{
           maxWidth: 1200,
           margin: "0 auto",
@@ -164,10 +182,11 @@ export default function Contact() {
         {/* ── RIGHT COLUMN – Form ── */}
         <form
           onSubmit={(e) => e.preventDefault()}
+          className="contact-form"
           style={{ display: "flex", flexDirection: "column", gap: 22, paddingLeft: 24 }}
         >
           {/* Full Name + Email */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+          <div className="contact-name-email-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
             <FormField label="Full Name" placeholder="Type here" type="text" />
             <FormField label="Email" placeholder="Type here" type="email" />
           </div>

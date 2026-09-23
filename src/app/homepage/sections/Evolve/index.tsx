@@ -61,7 +61,7 @@ export default function Evolve() {
 
   return (
     <section
-      className="w-full px-6 sm:px-10 pt-10 pb-16 sm:pb-20"
+      className="w-full px-6 sm:px-10 pt-10 pb-16 sm:pb-20 section-gap-md"
       style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}
     >
       <style>
