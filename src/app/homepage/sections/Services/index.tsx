@@ -14,7 +14,7 @@ export default function Services() {
       <div className="max-w-[1200px] mx-auto">
 
         {/* Heading block */}
-        <div className="text-center max-w-[700px] mx-auto mb-14 sm:mb-18">
+        <div data-stagger="1" className="text-center max-w-[700px] mx-auto mb-14 sm:mb-18">
           <h2
             className="text-white font-bold mb-5 leading-[1.1]"
             style={{
@@ -49,9 +49,10 @@ export default function Services() {
 
         {/* Cards row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {CARDS.map((card) => (
+          {CARDS.map((card, i) => (
             <div
               key={card.title}
+              data-stagger={String(i + 2)}
               className="flex flex-col items-center justify-center rounded-2xl px-6 py-6 sm:px-8 sm:py-8 cursor-pointer group transition-shadow duration-200"
               style={{
                 gap: 0,

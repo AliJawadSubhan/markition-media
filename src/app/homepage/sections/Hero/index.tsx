@@ -2,7 +2,7 @@
 
 export default function Hero() {
   return (
-    <section className="relative w-full">
+    <section data-hero className="relative w-full">
 
       {/* Two-column text content */}
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-10 pt-14 sm:pt-20 pb-14 sm:pb-20">
@@ -11,6 +11,7 @@ export default function Hero() {
           {/* Left — heading */}
           <div className="flex-1">
             <h1
+              data-hero-anim
               className="text-white"
               style={{
                 fontFamily: "var(--font-familjen, 'Familjen Grotesk', sans-serif)",
@@ -32,6 +33,7 @@ export default function Hero() {
           {/* Right — description + CTA */}
           <div className="lg:w-[360px] xl:w-[400px] flex-shrink-0 flex flex-col">
             <p
+              data-hero-anim
               className="text-white/70 text-[14px] sm:text-[15px] leading-[1.8] mb-7"
               style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}
             >
@@ -40,6 +42,7 @@ export default function Hero() {
               generate qualified opportunities and grow your business.
             </p>
             <a
+              data-hero-anim
               href="#contact"
               className="self-start inline-flex items-center gap-2 text-white text-[13.5px] font-semibold px-6 py-2.5 rounded-[6px] transition-opacity hover:opacity-90"
               style={{ background: "#0137D7" }}

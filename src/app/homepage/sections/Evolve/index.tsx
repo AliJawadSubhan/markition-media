@@ -173,6 +173,7 @@ export default function Evolve() {
 
         {/* Heading */}
         <h2
+          data-stagger="1"
           className="text-white text-center mb-10 sm:mb-12"
           style={{
             fontFamily: "var(--font-familjen, 'Familjen Grotesk', sans-serif)",
@@ -187,9 +188,10 @@ export default function Evolve() {
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-10 sm:mb-14">
-          {CARDS.map((card) => (
+          {CARDS.map((card, i) => (
             <div
               key={card.statement}
+              data-stagger={String(i + 2)}
               className="rounded-2xl overflow-hidden"
               style={{ background: "#ffffff" }}
             >

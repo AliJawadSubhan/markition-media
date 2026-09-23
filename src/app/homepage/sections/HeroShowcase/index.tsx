@@ -1,10 +1,11 @@
 export default function HeroShowcase() {
   return (
-    <section className="relative w-full">
+    <section data-showcase className="relative w-full">
 
       {/* Mockup card — no clipping, rounds on all sides */}
       <div className="relative z-10 max-w-[1100px] mx-auto px-6 sm:px-10 pb-10 sm:pb-14 pt-4">
         <div
+          data-showcase-anim
           className="relative w-full rounded-2xl overflow-hidden"
           style={{
             background: "#e8edf5",

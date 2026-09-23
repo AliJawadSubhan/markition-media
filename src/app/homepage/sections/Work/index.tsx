@@ -207,8 +207,11 @@ export default function Work() {
         return;
       }
 
+      // 40px dead zone — section stays fully locked while user scrolls this much,
+      // giving the heading a moment to register before the cards start moving
+      const LOCK_PX = 40;
       const sectionTop = section!.offsetTop;
-      const rawProgress = (window.scrollY - sectionTop) / distance;
+      const rawProgress = Math.max(0, window.scrollY - sectionTop - LOCK_PX) / (distance - LOCK_PX);
       const progress = Math.min(1, Math.max(0, rawProgress));
 
       track!.style.transform = `translate3d(${-progress * maxX}px, 0, 0)`;

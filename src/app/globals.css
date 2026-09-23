@@ -11,7 +11,7 @@ html::-webkit-scrollbar {
 }
 
 :root {
-  --background: #000028;
+  --background: #010c28;
   --foreground: #ffffff;
 }
 
@@ -30,6 +30,16 @@ body {
   min-height: 100%;
   color: var(--foreground);
   font-family: var(--font-inter, Inter, sans-serif);
+}
+
+/* ── Hero pre-hide (GSAP animates these in on load) ── */
+[data-hero-anim] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+[data-showcase-anim] {
+  opacity: 0;
+  will-change: opacity, transform;
 }
 
 @keyframes ticker-scroll {
