@@ -175,7 +175,7 @@ export default function Process() {
     <section
       ref={sectionRef}
       id="process"
-      style={{ height: `${TOTAL_PHASES * 100 + 100}vh`, position: "relative" }}
+      style={{ height: `${TOTAL_PHASES * 50 + 100}vh`, position: "relative" }}
     >
       <style>{`
         /* ── Mobile: every size below blends vw + vh (calc(Avw + Bvh)) with the
