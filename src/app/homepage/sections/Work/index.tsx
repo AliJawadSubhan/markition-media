@@ -365,11 +365,11 @@ export default function Work() {
         `}
       </style>
 
-      <div className="work-pin-sticky" style={{ background: "linear-gradient(160deg, #e8f4ff 0%, #f0f7ff 40%, #ddeeff 100%)" }}>
+      <div className="work-pin-sticky">
         <div className="w-full">
           <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
             <h2
-              className="mx-auto mb-8 max-w-[560px] text-center text-[#05051f] sm:mb-10"
+              className="mx-auto mb-8 max-w-[560px] text-center text-white sm:mb-10"
               style={{
                 fontFamily: "var(--font-familjen, 'Familjen Grotesk', sans-serif)",
                 fontSize: "clamp(34px, 4vw, 58px)",

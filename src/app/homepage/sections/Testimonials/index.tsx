@@ -38,7 +38,7 @@ function Logos() {
     fontFamily: "var(--font-inter), system-ui, sans-serif",
   };
   return (
-    <div style={{ display:"flex", justifyContent:"center", alignItems:"center", gap:"clamp(20px,4vw,48px)", flexWrap:"wrap" }}>
+    <div className="testimonial-logos" style={{ display:"flex", justifyContent:"center", alignItems:"center", gap:"clamp(20px,4vw,48px)", flexWrap:"wrap" }}>
       <span style={s}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#b0bcc8" strokeWidth="1.2" fill="none"/><path d="M5 7h4M7 5v4" stroke="#b0bcc8" strokeWidth="1.2" strokeLinecap="round"/></svg>Clutch</span>
       <span style={s}><svg width="14" height="13" viewBox="0 0 14 13" fill="#b0bcc8"><path d="M7 0l1.55 4.77H14L9.72 7.73l1.55 4.77L7 9.54l-4.27 2.96 1.55-4.77L0 4.77h5.45z"/></svg>Trustpilot</span>
       <span style={s}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="1.5" rx="0.75" fill="#b0bcc8"/><rect x="1" y="6.25" width="8" height="1.5" rx="0.75" fill="#b0bcc8"/><rect x="1" y="9.5" width="5" height="1.5" rx="0.75" fill="#b0bcc8"/></svg>sortlist</span>
@@ -58,30 +58,30 @@ function CardContent({ t }: { t: typeof TESTIMONIALS[0] }) {
       }}>
         100+ verified<br />love letters
       </h2>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom:12 }}>
+      <div className="testimonial-stars" style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom:12 }}>
         <span style={{ fontSize:15, fontWeight:600, color:"#0a1833", fontFamily:"var(--font-inter), system-ui, sans-serif" }}>5.0</span>
         {Array.from({length:5}).map((_,i)=><span key={i} style={{color:"#f59e0b",fontSize:18}}>★</span>)}
       </div>
-      <blockquote style={{
+      <blockquote className="testimonial-quote" style={{
         margin:"0 0 16px", fontSize:"clamp(16px,1.7vw,20px)", fontWeight:400,
         color:"#1a2a4a", lineHeight:1.65, maxWidth:560, marginInline:"auto",
         textAlign:"center", fontFamily:"var(--font-inter), system-ui, sans-serif",
       }}>
         "{t.quote}"
       </blockquote>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:14, marginBottom:"clamp(20px,3vw,32px)" }}>
-        <div style={{
+      <div className="testimonial-author" style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:14, marginBottom:"clamp(20px,3vw,32px)" }}>
+        <div className="testimonial-author-avatar" style={{
           width:48, height:48, borderRadius:"50%", background:t.bg,
           display:"flex", alignItems:"center", justifyContent:"center",
           color:"#fff", fontSize:16, fontWeight:700, flexShrink:0,
           fontFamily:"var(--font-inter), system-ui, sans-serif",
         }}>{t.initials}</div>
         <div style={{textAlign:"left"}}>
-          <div style={{ fontSize:15, fontWeight:700, color:"#0a1833", fontFamily:"var(--font-inter), system-ui, sans-serif" }}>{t.name}</div>
-          <div style={{ fontSize:13, color:"#6b7280", fontFamily:"var(--font-inter), system-ui, sans-serif" }}>{t.role}</div>
+          <div className="testimonial-author-name" style={{ fontSize:15, fontWeight:700, color:"#0a1833", fontFamily:"var(--font-inter), system-ui, sans-serif" }}>{t.name}</div>
+          <div className="testimonial-author-role" style={{ fontSize:13, color:"#6b7280", fontFamily:"var(--font-inter), system-ui, sans-serif" }}>{t.role}</div>
         </div>
       </div>
-      <div style={{ height:1, background:"#e5e7eb", marginBottom:"clamp(20px,3vw,32px)" }} />
+      <div className="testimonial-divider" style={{ height:1, background:"#e5e7eb", marginBottom:"clamp(20px,3vw,32px)" }} />
       <Logos />
     </>
   );
@@ -92,10 +92,19 @@ type Phase = "idle" | "exit-left" | "exit-right" | "resetting";
 export default function Testimonials() {
   const [deck, setDeck]   = useState([0, 1, 2 % N]);
   const [phase, setPhase] = useState<Phase>("idle");
+  const [isMobile, setIsMobile] = useState(false);
   const busy              = useRef(false);
   const frontRef          = useRef<HTMLDivElement>(null);
+  const touchStartX       = useRef<number | null>(null);
   const CARD_H            = 600;
   const DURATION          = 520; // ms
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 767);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // right arrow → card flies to the RIGHT, next testimonial
   const goNext = () => {
@@ -190,7 +199,7 @@ export default function Testimonials() {
     position: "absolute",
     top: "50%", left: "50%",
     width: "calc(100vw - 120px)",
-    maxWidth: 1100, height: CARD_H,
+    maxWidth: 1100, ...(isMobile ? {} : { height: CARD_H }),
     borderRadius: 0,
     padding: "clamp(44px,5vw,72px) clamp(44px,6vw,88px) clamp(36px,4vw,56px)",
     textAlign: "center",
@@ -198,8 +207,33 @@ export default function Testimonials() {
   };
   const cardCls = "testimonial-card";
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < 40) return; // ignore tiny taps
+    if (dx < 0) goNext(); else goPrev();
+  };
+
   return (
-    <section className="testimonials-section" style={{ position:"relative", overflow:"hidden", padding:"80px 0 80px", minHeight: CARD_H + 160 }}>
+    <section
+      className="testimonials-section"
+      style={{ position:"relative", overflow:"hidden", padding:"80px 0 80px", minHeight: CARD_H + 160 }}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <style>{`
+        @media (max-width: 767px) {
+          .testimonials-section {
+            min-height: 320px !important;
+            padding: 60px 0 !important;
+          }
+        }
+      `}</style>
       <style>{kf + `
         /* Cards are absolutely centered (top:50% + translateY(-50%)), so the
            gap above/below is always symmetric no matter how padding is
@@ -218,20 +252,36 @@ export default function Testimonials() {
             width: calc(100vw - 48px) !important;
             max-width: 500px !important;
             height: auto !important;
-            min-height: 520px !important;
-            padding: 36px 28px 28px !important;
+            min-height: 0 !important;
+            padding: 18px 16px 14px !important;
           }
-          .testimonial-nav-btn {
-            width: 36px !important;
-            height: 36px !important;
-            font-size: 20px !important;
-          }
-          .testimonial-nav-left  { left: 8px !important; }
-          .testimonial-nav-right { right: 8px !important; }
           .testimonial-h2 {
-            font-size: clamp(30px, 8vw, 44px) !important;
-            margin-top: 28px !important;
+            font-size: 18px !important;
+            line-height: 1.1 !important;
+            letter-spacing: -0.5px !important;
+            margin: 0 0 6px !important;
           }
+          .testimonial-stars { margin-bottom: 6px !important; }
+          .testimonial-quote {
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+            margin-bottom: 8px !important;
+          }
+          .testimonial-author { margin-bottom: 8px !important; gap: 10px !important; }
+          .testimonial-author-avatar { width: 34px !important; height: 34px !important; font-size: 13px !important; }
+          .testimonial-author-name { font-size: 13px !important; }
+          .testimonial-author-role { font-size: 11px !important; }
+          .testimonial-divider { margin-bottom: 8px !important; }
+          .testimonial-logos { gap: 10px !important; flex-wrap: nowrap !important; justify-content: space-around !important; }
+          .testimonial-logos span { font-size: 10px !important; gap: 3px !important; }
+          .testimonial-logos svg { width: 10px !important; height: 10px !important; }
+          .testimonial-nav-btn {
+            width: 34px !important;
+            height: 34px !important;
+            font-size: 18px !important;
+          }
+          .testimonial-nav-left  { left: 6px !important; }
+          .testimonial-nav-right { right: 6px !important; }
         }
       `}</style>
 

@@ -151,7 +151,7 @@ export default function Process() {
   }
 
   const isLastStep = step === STEPS.length - 1;
-  const s          = STEPS[step];
+  const s          = STEPS[step] ?? STEPS[0];
 
   function onCardMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (window.innerWidth <= 767) return;

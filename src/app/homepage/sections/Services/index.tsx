@@ -1,3 +1,7 @@
+"use client";
+
+import LottieAnimation from "../Evolve/LottieAnimation";
+
 const CARDS = [
   { title: "SEO",        sub: "Search visibility" },
   { title: "Paid Media", sub: "Performance campaigns" },
@@ -75,6 +79,11 @@ export default function Services() {
               </span>
             </div>
           ))}
+        </div>
+
+        {/* Lottie animation */}
+        <div className="w-full pt-10 sm:pt-14">
+          <LottieAnimation />
         </div>
 
       </div>

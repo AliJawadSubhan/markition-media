@@ -49,6 +49,7 @@ export default function AnimationOrchestrator() {
         });
       }
 
+
       // ─── Scroll animations ────────────────────────────────────────────────────
       function preHide(el: HTMLElement, y = 50, scale = 1) {
         gsap.set(el, { opacity: 0, y, scale });
