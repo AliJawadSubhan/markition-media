@@ -42,7 +42,7 @@ export default function Footer() {
           {/* ── Col 1: Logo + about ── */}
           <div>
             <Image
-              src="/markition-logo.svg"
+              src="/markition-logo-white.webp"
               alt="Markition"
               width={140}
               height={28}

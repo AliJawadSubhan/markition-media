@@ -63,11 +63,11 @@ export default function Ticker() {
           <div className="flex items-center gap-2 text-white text-[11px] sm:text-[13px] tracking-[0.18em] uppercase whitespace-nowrap">
             <span className="opacity-70">Join the 200+ companies trusting</span>
             <Image
-              src="/markition-logo.svg"
+              src="/markition-logo-white.webp"
               alt="Markition"
               width={90}
               height={22}
-              className="h-[16px] sm:h-[20px] w-auto brightness-0 invert opacity-70"
+              className="h-[16px] sm:h-[20px] w-auto opacity-70"
             />
           </div>
           <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.22)" }} />

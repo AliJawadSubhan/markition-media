@@ -79,7 +79,7 @@ export default function Navbar() {
         {/* Logo — links to homepage */}
         <a href="/" aria-label="Markition Media — Home" className="flex-shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/markition-logo.png" alt="Markition Media" className="h-[28px] sm:h-[32px] w-auto" />
+          <img src="/markition-logo-white.webp" alt="Markition Media" className="h-[28px] sm:h-[32px] w-auto" />
         </a>
 
         {/* Desktop links */}
