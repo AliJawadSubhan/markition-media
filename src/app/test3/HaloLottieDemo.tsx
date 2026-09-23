@@ -26,15 +26,15 @@ type LottieGlobal = {
   }) => LottieAnimation;
 };
 
-declare global {
-  interface Window {
-    lottie?: LottieGlobal;
-  }
+type WindowWithLottie = Window & typeof globalThis & { lottie?: LottieGlobal };
+
+function getLottie() {
+  return (window as WindowWithLottie).lottie;
 }
 
 function loadLottieScript() {
-  if (window.lottie) {
-    return Promise.resolve(window.lottie);
+  if (getLottie()) {
+    return Promise.resolve(getLottie()!);
   }
 
   return new Promise<LottieGlobal>((resolve, reject) => {
@@ -42,8 +42,9 @@ function loadLottieScript() {
 
     if (existingScript) {
       existingScript.addEventListener("load", () => {
-        if (window.lottie) {
-          resolve(window.lottie);
+        const lottie = getLottie();
+        if (lottie) {
+          resolve(lottie);
         } else {
           reject(new Error("Bodymovin loaded without exposing window.lottie"));
         }
@@ -56,8 +57,9 @@ function loadLottieScript() {
     script.src = LOTTIE_CDN;
     script.async = true;
     script.onload = () => {
-      if (window.lottie) {
-        resolve(window.lottie);
+      const lottie = getLottie();
+      if (lottie) {
+        resolve(lottie);
       } else {
         reject(new Error("Bodymovin loaded without exposing window.lottie"));
       }

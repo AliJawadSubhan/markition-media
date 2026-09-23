@@ -23,11 +23,7 @@ type LottieGlobal = {
   }) => LottieAnimation;
 };
 
-declare global {
-  interface Window {
-    lottie?: LottieGlobal;
-  }
-}
+type WindowWithLottie = Window & typeof globalThis & { lottie?: LottieGlobal };
 
 const heights = [310, 270, 232, 194, 158, 126, 104, 126, 158, 194, 232, 270, 310];
 const speeds = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3.5, 3, 2.5, 2];
@@ -39,9 +35,11 @@ function ease() {
   };
 }
 
+type ScaleKey = ReturnType<typeof ease> & { s: number[]; t: number };
+
 function scaleKeys(speed: number) {
   const cycles = Math.max(1, Math.round(speed / 2));
-  const keys = [];
+  const keys: ScaleKey[] = [];
 
   for (let i = 0; i <= cycles * 2; i += 1) {
     const t = (TOTAL_FRAMES / (cycles * 2)) * i;
@@ -216,9 +214,13 @@ function makeAnimationData() {
   };
 }
 
+function getLottie() {
+  return (window as WindowWithLottie).lottie;
+}
+
 function loadLottieScript() {
-  if (window.lottie) {
-    return Promise.resolve(window.lottie);
+  if (getLottie()) {
+    return Promise.resolve(getLottie()!);
   }
 
   return new Promise<LottieGlobal>((resolve, reject) => {
@@ -226,8 +228,9 @@ function loadLottieScript() {
 
     if (existingScript) {
       existingScript.addEventListener("load", () => {
-        if (window.lottie) {
-          resolve(window.lottie);
+        const lottie = getLottie();
+        if (lottie) {
+          resolve(lottie);
         } else {
           reject(new Error("Lottie loaded without exposing window.lottie"));
         }
@@ -240,8 +243,9 @@ function loadLottieScript() {
     script.src = LOTTIE_CDN;
     script.async = true;
     script.onload = () => {
-      if (window.lottie) {
-        resolve(window.lottie);
+      const lottie = getLottie();
+      if (lottie) {
+        resolve(lottie);
       } else {
         reject(new Error("Lottie loaded without exposing window.lottie"));
       }
