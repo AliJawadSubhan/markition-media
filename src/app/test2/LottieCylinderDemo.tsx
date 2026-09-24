@@ -57,6 +57,20 @@ function scaleKeys(speed: number) {
   }));
 }
 
+// Each group needs its own transform object — Lottie mutates these internally
+function makeTr() {
+  return {
+    ty: "tr",
+    p: { a: 0, k: [0, 0] },
+    a: { a: 0, k: [0, 0] },
+    s: { a: 0, k: [100, 100] },
+    r: { a: 0, k: 0 },
+    o: { a: 0, k: 100 },
+    sk: { a: 0, k: 0 },
+    sa: { a: 0, k: 0 },
+  };
+}
+
 function cylinderLayer(index: number, x: number, height: number, speed: number) {
   const width = 46;
   const capHeight = 17;
@@ -77,6 +91,21 @@ function cylinderLayer(index: number, x: number, height: number, speed: number) 
     },
     ao: 0,
     shapes: [
+      // ── 1. Cast shadow beneath cylinder ──────────────────────
+      {
+        ty: "gr",
+        nm: "cast shadow",
+        it: [
+          {
+            ty: "el",
+            p: { a: 0, k: [4, height / 2 + capHeight * 0.35] },
+            s: { a: 0, k: [width * 0.85, capHeight * 0.5] },
+          },
+          { ty: "fl", c: { a: 0, k: [0, 0.01, 0.05, 1] }, o: { a: 0, k: 55 }, r: 1 },
+          makeTr(),
+        ],
+      },
+      // ── 2. Glass tube body ────────────────────────────────────
       {
         ty: "gr",
         nm: "glass tube",
@@ -88,12 +117,7 @@ function cylinderLayer(index: number, x: number, height: number, speed: number) 
             s: { a: 0, k: [width, bodyHeight] },
             r: { a: 0, k: 5 },
           },
-          {
-            ty: "fl",
-            c: { a: 0, k: [0.02, 0.34, 1, 1] },
-            o: { a: 0, k: 58 },
-            r: 1,
-          },
+          { ty: "fl", c: { a: 0, k: [0.02, 0.34, 1, 1] }, o: { a: 0, k: 58 }, r: 1 },
           {
             ty: "st",
             c: { a: 0, k: [0.7, 0.92, 1, 1] },
@@ -110,24 +134,41 @@ function cylinderLayer(index: number, x: number, height: number, speed: number) 
             s: { a: 0, k: [4, bodyHeight * 0.94] },
             r: { a: 0, k: 2 },
           },
-          {
-            ty: "fl",
-            c: { a: 0, k: [0.9, 0.98, 1, 1] },
-            o: { a: 0, k: 78 },
-            r: 1,
-          },
-          {
-            ty: "tr",
-            p: { a: 0, k: [0, 0] },
-            a: { a: 0, k: [0, 0] },
-            s: { a: 0, k: [100, 100] },
-            r: { a: 0, k: 0 },
-            o: { a: 0, k: 100 },
-            sk: { a: 0, k: 0 },
-            sa: { a: 0, k: 0 },
-          },
+          { ty: "fl", c: { a: 0, k: [0.9, 0.98, 1, 1] }, o: { a: 0, k: 78 }, r: 1 },
+          makeTr(),
         ],
       },
+      // ── 3. Right-side shadow strip ────────────────────────────
+      {
+        ty: "gr",
+        nm: "right shadow",
+        it: [
+          {
+            ty: "rc",
+            p: { a: 0, k: [width * 0.27, 0] },
+            s: { a: 0, k: [10, bodyHeight * 0.9] },
+            r: { a: 0, k: 2 },
+          },
+          { ty: "fl", c: { a: 0, k: [0, 0.03, 0.14, 1] }, o: { a: 0, k: 75 }, r: 1 },
+          makeTr(),
+        ],
+      },
+      // ── 4. Bottom darkening ───────────────────────────────────
+      {
+        ty: "gr",
+        nm: "bottom dark",
+        it: [
+          {
+            ty: "rc",
+            p: { a: 0, k: [2, bodyHeight * 0.27] },
+            s: { a: 0, k: [width - 4, bodyHeight * 0.46] },
+            r: { a: 0, k: 4 },
+          },
+          { ty: "fl", c: { a: 0, k: [0, 0.03, 0.15, 1] }, o: { a: 0, k: 38 }, r: 1 },
+          makeTr(),
+        ],
+      },
+      // ── 5. Caps (top bright, bottom dark) ────────────────────
       {
         ty: "gr",
         nm: "caps",
@@ -147,12 +188,7 @@ function cylinderLayer(index: number, x: number, height: number, speed: number) 
             lj: 1,
             ml: 4,
           },
-          {
-            ty: "fl",
-            c: { a: 0, k: [0.04, 0.28, 0.95, 1] },
-            o: { a: 0, k: 24 },
-            r: 1,
-          },
+          { ty: "fl", c: { a: 0, k: [0.04, 0.28, 0.95, 1] }, o: { a: 0, k: 24 }, r: 1 },
           {
             ty: "el",
             nm: "bottom cap",
@@ -161,29 +197,15 @@ function cylinderLayer(index: number, x: number, height: number, speed: number) 
           },
           {
             ty: "st",
-            c: { a: 0, k: [0.78, 0.94, 1, 1] },
+            c: { a: 0, k: [0.30, 0.54, 0.82, 1] },
             o: { a: 0, k: 96 },
             w: { a: 0, k: 3 },
             lc: 1,
             lj: 1,
             ml: 4,
           },
-          {
-            ty: "fl",
-            c: { a: 0, k: [0.04, 0.28, 0.95, 1] },
-            o: { a: 0, k: 18 },
-            r: 1,
-          },
-          {
-            ty: "tr",
-            p: { a: 0, k: [0, 0] },
-            a: { a: 0, k: [0, 0] },
-            s: { a: 0, k: [100, 100] },
-            r: { a: 0, k: 0 },
-            o: { a: 0, k: 100 },
-            sk: { a: 0, k: 0 },
-            sa: { a: 0, k: 0 },
-          },
+          { ty: "fl", c: { a: 0, k: [0.01, 0.08, 0.38, 1] }, o: { a: 0, k: 62 }, r: 1 },
+          makeTr(),
         ],
       },
     ],

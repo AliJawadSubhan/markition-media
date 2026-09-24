@@ -82,7 +82,7 @@ export default function Services() {
         </div>
 
         {/* Lottie animation */}
-        <div className="w-full pt-10 sm:pt-14">
+        <div className="w-full pt-20 sm:pt-28">
           <LottieAnimation />
         </div>
 
